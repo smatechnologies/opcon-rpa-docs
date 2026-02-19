@@ -14,6 +14,12 @@ This version fixed a bug where passwords for Network Credentials were not being 
 If you had any previous NetworkCredentials, even if you were not using them, they will need to have their passwords updated if they are to be
 used with an Execution Context. Passwords are encrypted with Windows Data Protection API.
 
+This version also made Execution Context required for all Robot tasks. Any existing Robot tasks will need to be saved and published again with an Execution Context defined.
+See [Execution Context](./robot-task-rpa.md#execution-context) for more details.
+
+Running existing Robot tasks will result in job failures.
+
+
 #### 1.0.1
 ##### Plugin update
 An update was made to the ACS plugin and is necessary to receive a bugfix on Agent status showing as available even if the Tray Client isn't actually running.

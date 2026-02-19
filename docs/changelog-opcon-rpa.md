@@ -3,6 +3,19 @@ sidebar_label: 'Change Log'
 ---
 
 # Change Log 
+### 1.0.2 (February 2026)
+
+#### 1. Features Introduced
+Desktop Session switching and Execution Context (__CON-64__). Added ability for single-user windows systems to switch between locked user sessions.
+Added ability for multi-user windows server systems to direct tasks to appropriate user session.
+
+#### 2. Bug Fixes
+
+- __CON-921__ - Endpoint /api/version no longer requires a session token.
+- __CON-893__ - Fixed issue with variable resolver when using List Variables like `{USERVAR(myList)}`, and the first row was specified to be headers, caused headers to be printed as a row.
+- __CON-838__ - Corrected links for help pages
+- __CON-715__ - Removed star/stop service button from home screen. Use services.msc instead.
+- __CON-650__ - Fixed issue where Certificate Manager wasn't always displaying available certificates correctly and client certificates were not getting passed to the TaskRunner when /api/taskProcess/startNew was called.
 
 ### 1.0.1 (November 2025)
 
