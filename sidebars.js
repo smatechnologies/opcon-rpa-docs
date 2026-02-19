@@ -14,7 +14,14 @@ module.exports = {
       'mapping-opcon-properties',
       'troubleshooting-opcon-rpa',
       'changelog-opcon-rpa',
-      'robot-task-rpa',
+      {
+        type: 'category',
+        label: 'Robot Task',
+        link: {type: 'doc', id: 'robot-task-rpa'},
+        items: [
+          'rpa-security-settings',
+        ],
+      },
       ],
     },
     {

@@ -45,9 +45,21 @@ module.exports = {
   ],
   plugins: [
 //    [
-//      require.resolve('@cmfcmf/docusaurus-search-local'), 
+//      require.resolve('@cmfcmf/docusaurus-search-local'),
 //      {
 //      }
 //    ],
+    [
+      // TODO: temporary redirect until client is updated to correct url
+      '@docusaurus/plugin-client-redirects',
+      {
+        redirects: [
+          {
+            from: '/rpa-execution-context',
+            to: '/rpa-security-settings',
+          },
+        ],
+      },
+    ],
   ],
 };
