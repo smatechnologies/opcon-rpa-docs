@@ -8,7 +8,7 @@ hide_title: true
 
 Cloud clients connecting via VPN can still use OpCon RPA. However, Netcom Relay must be installed on a server that is able to communicate over the VPN tunnel to the OpCon cloud instance. That same server must also be able to communicate with the RPA Agent.
 
-::: info Note 
+:::info Note 
 
 Robot Tasks in VisualCron do not require Netcom Relay and will work over VPN without any additional configuration. The steps below apply to OpCon RPA only.
 
