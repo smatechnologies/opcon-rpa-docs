@@ -8,13 +8,13 @@ hide_title: true
 #### Operating systems
 
 - RPA is designed for Windows based computers
-- RPA works on the following operating systems: Windows Server 2008 R2/2012/2016/2019/2022 and Windows 8/10/11
+- RPA works on the following operating systems: Windows Server 2008 R2/2012/2016/2019/2022/2025 and Windows 8/10/11
 - RPA works on both 32-bit and 64-bit processors
 - RPA requires .NET 4.8
 
 #### Computer requirements (Server only)
 
-- Operating system - recommended Windows operating system is Windows Server 2008 R2/2012/2016/2019/2019/2022
+- Operating system - recommended Windows operating system is Windows Server 2008 R2/2012/2016/2019/2022/2025
 - Disk space - please reserve 1GB to 4GB depending on how much logging you need to store
 - CPU - 2GHz or more, quad core or more
 - Memory - 4GB or more
@@ -29,8 +29,8 @@ hide_title: true
 
 #### Computer requirements (Client and Server)
 
-- Operating system - recommended Windows operating system is Windows Server 2008 R2/2012/2016/2019/2022
+- Operating system - recommended Windows operating system is Windows Server 2008 R2/2012/2016/2019/2022/2025
 - Disk space - please reserve 1GB to 4GB depending on how much logging you need to store
 - CPU - 2GHz or more, quad core or more
 - Memory - 4GB or more
-- Minimum screen resolution 1920*1080   
+- Minimum screen resolution 1920*1080
