@@ -43,10 +43,14 @@ Have these three files ready:
 You also need:
 
 - A Solution Manager user account with privileges to add an RPA agent.
-- Local administrator rights on the Windows system where the RPA Agent will run.
+- Local administrator rights on the Windows system where the RPA Agent will run. These are needed to run the installer and to apply the [Security Settings](./rpa-security-settings.md) — not for day-to-day operation.
 
 :::note On-premises vs. cloud
 Netcom Relay is required only when integrating RPA with a cloud instance of OpCon CORE Automate / Solution Manager. On-premises installations skip Step 3.
+:::
+
+:::note Service account
+The installer registers the RPA Agent as a Windows service running under the Local System account (`NT AUTHORITY\SYSTEM`), and does not prompt you for a service account. The service needs that privilege level to unlock and switch desktop sessions. The accounts that run robot tasks are separate and do not need local administrator rights. See [Service Accounts and Permissions](./rpa-permissions.md).
 :::
 
 ## Step 1 — Add an RPA agent in Solution Manager
@@ -91,6 +95,8 @@ To install the RPA Agent on the host Windows system, complete the following step
 1. Double-click `RPAAgent_x.y.z.msi` (the version number may differ).
 2. When prompted to allow this app to make changes to your device, select **Yes**.
 3. When the installation finishes, the RPA Tray Client opens automatically.
+
+The installer registers the **RPA Agent** Windows service under the Local System account and starts it. The Tray Client runs under the account you are signed in as.
 
 ## Step 5 — Connect the RPA Agent to OpCon
 
@@ -144,6 +150,18 @@ No. Starting in 1.1.0, OpCon RPA stores tasks locally on the RPA Agent and no lo
 
 **What do I enter for the Netcom Relay name on an on-premises installation?**
 Type `<Default>`. Solution Manager requires a value before it lets you open the RPA Settings page.
+
+**What account does the RPA Agent service run under?**
+The Local System account (`NT AUTHORITY\SYSTEM`). The installer sets this automatically. See [Service Accounts and Permissions](./rpa-permissions.md).
+
+**Do the users that run robot tasks need local administrator rights?**
+No. Local administrator rights are required only to run the installer and apply the Windows local security policies. See [Service Accounts and Permissions](./rpa-permissions.md).
+
+## Related topics
+
+- [Service Accounts and Permissions](./rpa-permissions.md)
+- [Security Settings](./rpa-security-settings.md)
+- [Update - OpCon RPA Agent and ACS plugin](./update-opcon-rpa.md)
 
 ## Glossary
 

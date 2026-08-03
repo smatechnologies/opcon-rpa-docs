@@ -29,6 +29,7 @@ OpCon Robotic Process Automation (RPA) continues automation through the **last m
 - [System Requirements](./system-requirements-opcon-rpa.md)
 - [Acquiring a License](./acquiring-a-license-opcon-rpa.md)
 - [Installation](./installation-opcon-rpa.md)
+- [Service Accounts and Permissions](./rpa-permissions.md)
 - [Cloud VPN Install](./install-cloud-vpn.md)
 - [Update](./update-opcon-rpa.md)
 - [Orchestration with OpCon](./orchestration-with-opcon-opcon-rpa.md)

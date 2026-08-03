@@ -50,6 +50,10 @@ This page explains all three.
 
 The Execution Context is set on the main form using the button named **Execution Context**. It controls how the task interacts with the machine before and after the task runs. By default, the Execution Context is set to the user that is currently logged in and editing the task.
 
+:::note Privilege level of the Execution Context user
+The task runs inside the Execution Context user's own Windows session, so it acts with exactly the privileges of that account. That account does not need local administrator rights — grant it only the rights the applications the task drives require. Session unlocking is handled separately by the RPA Agent service, which runs under the Local System account. See [Service Accounts and Permissions](./rpa-permissions.md).
+:::
+
 :::tip Required at Publish, optional for Drafts
 An Execution Context is required to **Publish** a Robot Task. **Drafts** can be saved without one. When another user edits this task, your Execution Context settings remain unchanged unless that user opens the Execution Context menu.
 :::
@@ -139,9 +143,9 @@ The edit credentials screen shows information from your current Windows session.
 
 Your credentials are secured through several layers:
 
-1. **Secure transmission:** Credentials are sent over HTTPS to the RPAAgent service on localhost. The connection also uses your Windows session for authentication.
-2. **Encryption:** Your username and password are encrypted with a randomly generated key created the first time you started RPA.
-3. **GUID reference:** Internally, RPA references you only by a GUID (unique identifier). Your encrypted credentials are never decrypted and sent back to you, and cannot be read by the Tray Client.
+1. **Secure transmission:** Credentials are sent to the RPA Agent service on the local machine over an encrypted channel that authenticates you with your Windows session. They never leave the host.
+2. **Encryption:** Your username and password are encrypted with a randomly generated key created the first time you started RPA. The key itself is protected by Windows so that it can only be used on that machine.
+3. **GUID reference:** Internally, RPA references you only by a GUID (unique identifier). Robot tasks and Execution Contexts hold the GUID, not your password.
 4. **One-time entry:** After initial setup, you do not need to enter your password again when creating additional Execution Contexts.
 
 ### First-time setup
@@ -159,7 +163,7 @@ When the Agent service receives a command to run a task:
 1. It looks up the GUID for the task.
 2. It decrypts the stored credentials.
 3. It switches to the appropriate user session.
-4. It promptly discards the decrypted credentials from memory.
+4. It holds the decrypted credentials in memory only for the duration of the task.
 
 Credentials are never stored in plain text and are never persisted in decrypted form.
 
@@ -172,7 +176,7 @@ RPA intentionally waits until the user locks the session (by selecting **OK** on
 RPA can unlock a locked session, but it cannot log in to a user account. After a reboot, manually log in as each user and lock each session — RPA can then run tasks for those users.
 
 **Are my Windows credentials stored in plain text?**
-No. Credentials are encrypted with a randomly generated key created the first time you started RPA. They are referenced only by GUID, are decrypted only when the Agent service runs a task, and are discarded from memory immediately after.
+No. Credentials are encrypted with a randomly generated key created the first time you started RPA, and are referenced only by GUID. The Agent service decrypts them in memory when it needs them — when it prepares the session for a task, or when you open a stored credential in RPA — and never writes them to disk in decrypted form.
 
 **Can I save a draft task without an Execution Context?**
 Yes. An Execution Context is required only at the **Publish** stage. Drafts can be saved without one.
@@ -182,6 +186,14 @@ No. Locking a session leaves the RDP connection active — the session shows a l
 
 **Can I chain multiple Robot Tasks under the same user without locking and unlocking each time?**
 Yes. Set the After Execution Behavior to **Do nothing** for the intermediate tasks. The session stays unlocked, which avoids the delays caused by repeated lock/unlock cycles.
+
+**Does the Execution Context user need local administrator rights?**
+No. The task runs at the privilege level of that account, so grant it only what the applications it drives require. See [Service Accounts and Permissions](./rpa-permissions.md).
+
+## Related topics
+
+- [Service Accounts and Permissions](./rpa-permissions.md)
+- [Security Settings](./rpa-security-settings.md)
 
 ## Glossary
 

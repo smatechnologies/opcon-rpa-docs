@@ -33,6 +33,9 @@ OpCon RPA is designed for US financial institutions — banks, credit unions, an
 **How does OpCon RPA relate to VisualCron RPA?**
 Both products provide RPA capabilities. OpCon RPA is the Continuous-supported product; VisualCron RPA documentation is included for customers using that integration.
 
+**What Windows permissions does OpCon RPA require?**
+The RPA Agent service runs under the Windows Local System account, which it needs to unlock and switch desktop sessions. The accounts that run robot tasks are separate and do not need local administrator rights. See [Service Accounts and Permissions](./rpa-permissions.md).
+
 ## Glossary
 
 | Term | Definition |
