@@ -14,7 +14,6 @@ module.exports = {
         'rpa-permissions',
         'install-cloud-vpn',
         'update-opcon-rpa',
-        'orchestration-with-opcon-opcon-rpa',
         'mapping-opcon-properties',
         'troubleshooting-opcon-rpa',
         {
