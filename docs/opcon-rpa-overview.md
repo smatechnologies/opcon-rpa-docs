@@ -26,7 +26,6 @@ This section describes how to install, configure, and operate OpCon RPA, and how
 | [Service Accounts and Permissions](./rpa-permissions.md) | Which Windows account each component runs under, why the RPA Agent service requires the Local System account, and what the accounts that run robot tasks need. |
 | [Installation - OpCon RPA for Cloud Customers on VPN](./install-cloud-vpn.md) | Where to host Netcom Relay when cloud customers connect over VPN. |
 | [Update - OpCon RPA Agent and ACS plugin](./update-opcon-rpa.md) | Update considerations and procedure for the RPA Agent, Tray Client, and ACS plugin. |
-| [Orchestration with OpCon](./orchestration-with-opcon-opcon-rpa.md) | How to start RPA jobs from OpCon by frequency, dependency, or Self Service. |
 | [Mapping OpCon Properties](./mapping-opcon-properties.md) | How to pass input and output data between OpCon and OpCon RPA using Schedule and Job Instance Properties. |
 | [Troubleshooting](./troubleshooting-opcon-rpa.md) | Known limitations of OpCon RPA desktop recording and playback. |
 | [Robot Task](./robot-task-rpa.md) | How OpCon RPA robot tasks work, including execution context and credential handling. |
@@ -38,7 +37,7 @@ This section describes how to install, configure, and operate OpCon RPA, and how
 
 - **First-time install:** Start with [System Requirements](./system-requirements-opcon-rpa.md), then [Acquiring a License](./acquiring-a-license-opcon-rpa.md), then [Installation - OpCon RPA Agent and Netcom Relay](./installation-opcon-rpa.md).
 - **Reviewing security posture and required permissions:** Read [Service Accounts and Permissions](./rpa-permissions.md) and [Security Settings](./rpa-security-settings.md).
-- **Connecting RPA jobs to OpCon schedules:** Read [Orchestration with OpCon](./orchestration-with-opcon-opcon-rpa.md) and [Mapping OpCon Properties](./mapping-opcon-properties.md).
+- **Connecting RPA jobs to OpCon schedules:** Read [Mapping OpCon Properties](./mapping-opcon-properties.md).
 - **Configuring task behavior:** Read [Robot Task](./robot-task-rpa.md) and [Security Settings](./rpa-security-settings.md).
 - **Managing existing tasks:** Read [Copy a Task](./copy-task-rpa.md) and [Delete a Task](./delete-task-rpa.md).
 - **Updating an existing install:** Read [Update - OpCon RPA Agent and ACS plugin](./update-opcon-rpa.md).
