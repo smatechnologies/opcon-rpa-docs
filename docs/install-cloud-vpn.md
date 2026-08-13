@@ -25,10 +25,6 @@ Use this page if all of the following apply:
 - Your network reaches OpCon over a VPN tunnel rather than the public Internet.
 - You are installing **OpCon RPA**.
 
-:::note VisualCron RPA over VPN
-Robot Tasks in VisualCron do not require Netcom Relay and work over VPN with no additional configuration. The steps on this page apply to OpCon RPA only.
-:::
-
 ## How this changes the standard install
 
 | Standard cloud install | Cloud + VPN (this page) |
@@ -83,8 +79,8 @@ A customer can be on VPN and use Relay at the same time. Relay communicates over
 
 ## FAQs
 
-**Do all RPA installations on VPN require Netcom Relay?**
-Only OpCon RPA installations require Netcom Relay. Robot Tasks in VisualCron work over VPN without Relay.
+**Do OpCon RPA installations on VPN require Netcom Relay?**
+Yes. Netcom Relay routes traffic between the RPA Agent and the OpCon cloud instance over the VPN tunnel.
 
 **Does the Relay server need to be dedicated to RPA?**
 No. The Relay server does not have to be dedicated, but it must be able to reach both the OpCon cloud instance over the VPN tunnel and the RPA Agent directly.
