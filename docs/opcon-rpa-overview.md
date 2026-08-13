@@ -48,9 +48,6 @@ This section describes how to install, configure, and operate OpCon RPA, and how
 **What does OpCon RPA automate that OpCon alone cannot?**
 OpCon RPA automates interactions with applications that lack APIs or scheduled-job interfaces — typically desktop or web applications that require keyboard and mouse input. OpCon orchestrates these RPA tasks alongside its existing workload automation.
 
-**How does OpCon RPA relate to VisualCron RPA?**
-Both products provide RPA capabilities. OpCon RPA is the Continuous-supported product and is the focus of this section. VisualCron RPA documentation is included in a separate section for customers using that integration.
-
 **Do I need Netcom Relay?**
 Netcom Relay is required when integrating RPA with a cloud instance of OpCon CORE Automate / Solution Manager. On-premises installations do not require Relay.
 
