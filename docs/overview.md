@@ -30,9 +30,6 @@ OpCon RPA automates interactions with applications that lack APIs or scheduled-j
 **Who is OpCon RPA designed for?**
 OpCon RPA is designed for US financial institutions — banks, credit unions, and insurance companies — that already use OpCon for workload automation and want to extend that automation into manual, UI-driven processes.
 
-**How does OpCon RPA relate to VisualCron RPA?**
-Both products provide RPA capabilities. OpCon RPA is the Continuous-supported product; VisualCron RPA documentation is included for customers using that integration.
-
 **What Windows permissions does OpCon RPA require?**
 The RPA Agent service runs under the Windows Local System account, which it needs to unlock and switch desktop sessions. The accounts that run robot tasks are separate and do not need local administrator rights. See [Service Accounts and Permissions](./rpa-permissions.md).
 
@@ -47,4 +44,3 @@ The RPA Agent service runs under the Windows Local System account, which it need
 ## Support information
 
 - [SMA Support Links and User Community](https://smatechnologies.my.site.com/SMAOpConUserCommunity/s/login/)
-- [Full VisualCron User Documentation](https://www.visualcron.com/documentation.aspx)

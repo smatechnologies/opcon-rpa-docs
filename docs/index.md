@@ -54,25 +54,4 @@ OpCon Robotic Process Automation (RPA) continues automation through the **last m
 
 </div>
 
-<div style={{flex: '1', minWidth: '160px', display: 'flex', flexDirection: 'column', gap: '0.6rem'}}>
-
-<div style={{background: 'var(--ifm-card-background-color)', border: '1px solid var(--ifm-color-emphasis-400)', borderRadius: '10px', padding: '0.75rem 1rem'}}>
-
-### VisualCron RPA
-
-- [Introduction to VisualCron RPA](./visualcron-rpa.md)
-- [System Requirements](./system-requirements-visualcron-rpa.md)
-- [Acquiring a License](./acquiring-a-license-visualcron-rpa.md)
-- [Installation](./installation-visualcron-rpa.md)
-- [Overview](./overview-visualcron-rpa.md)
-- [Navigation](./navigation-visualcron-rpa.md)
-- [Orchestration with OpCon](./orchestration-with-opcon-visualcron-rpa.md)
-- [Job Configuration](./rpa-job-config-with-visualcron.md)
-- [Reporting and Metrics](./reporting-and-metrics-visualcron-rpa.md)
-- [Troubleshooting](./troubleshooting-visualcron-rpa.md)
-
-</div>
-
-</div>
-
 </div>

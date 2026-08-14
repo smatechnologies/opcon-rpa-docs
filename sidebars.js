@@ -28,23 +28,5 @@ module.exports = {
         'delete-task-rpa',
       ],
     },
-    {
-      type: 'category',
-      label: 'VisualCron RPA',
-      link: { type: 'doc', id: 'visualcron-rpa-overview' },
-      collapsed: true,
-      items: [
-        'visualcron-rpa',
-        'system-requirements-visualcron-rpa',
-        'acquiring-a-license-visualcron-rpa',
-        'installation-visualcron-rpa',
-        'overview-visualcron-rpa',
-        'navigation-visualcron-rpa',
-        'orchestration-with-opcon-visualcron-rpa',
-        'rpa-job-config-with-visualcron',
-        'reporting-and-metrics-visualcron-rpa',
-        'troubleshooting-visualcron-rpa',
-      ],
-    },
   ],
 };
