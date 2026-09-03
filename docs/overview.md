@@ -22,6 +22,8 @@ OpCon RPA is an OpCon extension with exponential implications.
 
 **OpCon RPA** is designed for banks, credit unions, and insurance companies for use in tandem with OpCon, extending its functionality and usefulness.
 
+OpCon RPA has three task types — Robot, Web Macro, and Scan Document. A Robot Task drives an interactive desktop; Web Macro and Scan Document tasks run in their own host process and need no signed-in Windows session. See [Task Types](./task-types-overview.md).
+
 ## FAQs
 
 **What does OpCon RPA automate that OpCon alone cannot?**
@@ -31,7 +33,7 @@ OpCon RPA automates interactions with applications that lack APIs or scheduled-j
 OpCon RPA is designed for US financial institutions — banks, credit unions, and insurance companies — that already use OpCon for workload automation and want to extend that automation into manual, UI-driven processes.
 
 **What Windows permissions does OpCon RPA require?**
-The RPA Agent service runs under the Windows Local System account, which it needs to unlock and switch desktop sessions. The accounts that run robot tasks are separate and do not need local administrator rights. See [Service Accounts and Permissions](./rpa-permissions.md).
+The RPA Agent service runs as Local System, which is what lets it unlock and switch desktop sessions with nobody at the keyboard. There is nothing to choose during installation. The accounts that run tasks are separate, run at their own privilege level, and do not need local administrator rights. See [Service Accounts and Permissions](./rpa-permissions.md).
 
 ## Glossary
 
@@ -40,6 +42,8 @@ The RPA Agent service runs under the Windows Local System account, which it need
 | RPA | Robotic Process Automation. Software that records and plays back human interactions (keystrokes, mouse actions) with applications that lack programmatic interfaces. |
 | Last mile | The final manual steps in an automated process — typically UI interactions that an API-based scheduler cannot perform. |
 | Robot task | A recorded sequence of interactions that the RPA agent plays back when triggered. |
+| Web Macro | A task that drives its own browser against page elements, with no desktop session. |
+| Scan Document | A task that extracts data from scanned documents, with no desktop session. |
 
 ## Support information
 

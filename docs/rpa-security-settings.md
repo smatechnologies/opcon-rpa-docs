@@ -1,7 +1,7 @@
 ---
 sidebar_label: 'Security Settings'
 title: OpCon RPA security settings
-description: "Two Windows local security policies required for OpCon RPA foreground task execution: disable SAS and disable Admin Approval Mode for the built-in Administrator account."
+description: "Two Windows local security policies required when the RPA Agent service runs as Local System and unlocks desktop sessions: disable SAS and disable Admin Approval Mode for the built-in Administrator account."
 tags:
   - Procedural
   - System Administrator
@@ -13,11 +13,11 @@ hide_title: true
 
 ## What is it?
 
-This page describes two Windows local security policies required for OpCon RPA to interact with the Windows Credential Provider. These settings allow OpCon RPA to perform foreground task execution and session management on Windows 2008 and later.
+This page describes two Windows local security policies required for OpCon RPA to interact with the Windows Credential Provider. These settings allow OpCon RPA to unlock and switch desktop sessions for a Robot Task on any supported version of Windows.
 
-**Windows 2008 and later security settings for Credential Provider**
+**Security settings for the Credential Provider**
 
-Two security settings are required for foreground execution. These settings allow OpCon RPA to interact with the Windows Credential Provider, which is necessary for session management when a task runs.
+Two security settings are required for desktop session unlocking. These settings allow OpCon RPA to interact with the Windows Credential Provider, which is necessary for session management when a task runs.
 
 The RPA Agent installer registers its own credential provider for this purpose: it installs `InteractiveLogonCPx64.dll` to `C:\Windows\System32` and registers it under `HKEY_LOCAL_MACHINE` as a COM server and as a Windows credential provider, so the Windows sign-in interface loads it. The RPA Agent service, running as Local System, uses it to unlock and switch desktop sessions when no one is at the machine. The two policies below are what allow that exchange to complete. See [Service Accounts and Permissions](./rpa-permissions.md).
 
@@ -27,7 +27,7 @@ Applying these policies requires local administrator rights on the RPA host. Thi
 
 ## 1. Do not require CTRL+ALT+DEL
 
-To make interactive logon work in Windows 2008 and later, you must disable SAS (Secure Attention Sequence).
+To make interactive logon work, you must disable SAS (Secure Attention Sequence).
 
 ### Steps
 
@@ -87,26 +87,30 @@ This policy setting controls the behavior of Admin Approval Mode for the built-i
 ## FAQs
 
 **Why does OpCon RPA need these security settings?**
-The settings allow OpCon RPA to interact with the Windows Credential Provider for session management during foreground task execution.
+The settings allow OpCon RPA to interact with the Windows Credential Provider for session management when it unlocks or switches a desktop session for a Robot Task.
+
+**Do I need these settings if all my Robot Tasks use an unattended session?**
+No. In an unattended session OpCon signs the account in over Remote Desktop, so there is no locked session for the Agent to unlock and neither policy comes into play. The credential provider is installed either way — it is installed on every host. See [Unattended Session](./rpa-unattended-session.md).
 
 **Do I need to reboot after changing the Admin Approval Mode setting?**
 Yes. After applying the Admin Approval Mode change, the computer must be rebooted.
 
 **Which Windows versions do these settings apply to?**
-Windows 2008 and later.
+Every supported version of Windows. Session management requires Windows 10 or higher; on anything older the Agent reports `Windows 10 or higher is required`. For the versions OpCon RPA supports, see [System Requirements](./system-requirements-opcon-rpa.md).
 
 **Do I need to keep local administrator rights after applying these settings?**
 No. Applying the policies is a one-time administrator task. Ongoing operation does not require local administrator rights. See [Service Accounts and Permissions](./rpa-permissions.md).
 
 **Which OpCon RPA component uses the Credential Provider?**
-The RPA Agent service, which runs under the Local System account. The Tray Client that runs the automation does not interact with the Credential Provider.
+The RPA Agent service, which runs as Local System. The Tray Client that runs the automation does not interact with the Credential Provider.
 
 **Does OpCon RPA install its own credential provider?**
-Yes. The RPA Agent installer installs `InteractiveLogonCPx64.dll` to `C:\Windows\System32` and registers it as a Windows credential provider, so the sign-in interface loads it. The RPA Agent service passes credentials to it over a named pipe on the local machine. Include it in the scope of any security review of the host. See [Service Accounts and Permissions](./rpa-permissions.md).
+Yes, on every host. The installer installs `InteractiveLogonCPx64.dll` to `C:\Windows\System32` and registers it as a Windows credential provider, so the sign-in interface loads it, and the RPA Agent service passes credentials to it over a named pipe on the local machine. There is no install option that omits it. See [Service Accounts and Permissions](./rpa-permissions.md).
 
 ## Related topics
 
 - [Service Accounts and Permissions](./rpa-permissions.md)
+- [Permissions Troubleshooting](./rpa-permissions-troubleshooting.md)
 - [Robot Task](./robot-task-rpa.md)
 
 ## Glossary

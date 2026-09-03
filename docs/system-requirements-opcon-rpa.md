@@ -1,42 +1,51 @@
 ---
 sidebar_label: 'System Requirements'
 title: OpCon RPA system requirements
-description: "Operating system, CPU, memory, and disk requirements for OpCon RPA Server, Client, and combined Client/Server installations."
+description: "Operating system, processor, memory, disk, and software requirements for installing OpCon RPA on a Windows host."
 tags:
   - Reference
   - System Administrator
   - RPA
+  - Installation
 hide_title: true
 ---
 
 # System Requirements
 
-## What is it?
+OpCon RPA installs as a single package on a Windows host. One installation provides both the RPA Agent Windows service and the RPA Tray Client, so there is nothing to install separately on either side.
 
-- RPA is designed for Windows based computers
-- RPA works on the following operating systems: Windows Server 2008 R2/2012/2016/2019/2022/2025 and Windows 8/10/11
-- RPA works on both 32-bit and 64-bit processors
-- RPA requires .NET Framework 4.8
+## Supported operating systems
 
-## Computer requirements (Server only)
+OpCon RPA requires 64-bit (x64) Windows. 32-bit systems are not supported.
 
-- Operating system - recommended Windows operating system is Windows Server 2008 R2/2012/2016/2019/2022/2025
-- Disk space - please reserve 1GB to 4GB depending on how much logging you need to store
-- CPU - 2GHz or more, quad core or more
-- Memory - 4GB or more
+The following operating systems are supported:
 
-## Computer requirements (Client only)
+- Windows Server 2016
+- Windows Server 2019
+- Windows Server 2022
+- Windows Server 2025
+- Windows 11
 
-- Operating system — recommended Windows operating system is Windows 8/10/11
-- Disk space — reserve 1GB
-- CPU — 2GHz or more, quad core or more
+:::note
+Operating systems that have reached the end of Microsoft support are not supported, including Windows Server 2008 R2, Windows Server 2012, Windows Server 2012 R2, Windows 8.1, and Windows 10.
+:::
+
+## Computer requirements
+
+- Processor — 64-bit (x64), 2GHz or faster, quad core or more
 - Memory — 4GB or more
-- Minimum screen resolution 1920×1080
+- Disk space — reserve 1GB to 4GB, depending on how much logging you need to store
+- Screen resolution — 1920x1080 or higher
 
-## Computer requirements (Client and Server)
+## Software requirements
 
-- Operating system - recommended Windows operating system is Windows Server 2008 R2/2012/2016/2019/2022/2025
-- Disk space - please reserve 1GB to 4GB depending on how much logging you need to store
-- CPU - 2GHz or more, quad core or more
-- Memory - 4GB or more
-- Minimum screen resolution 1920*1080
+| Requirement | Details |
+|---|---|
+| .NET Framework 4.8 | Required by the RPA Tray Client and by the host process that runs Web Macro and Scan Document tasks. Windows Server 2022, Windows Server 2025, and Windows 11 include a compatible version. On Windows Server 2016 and Windows Server 2019, confirm .NET Framework 4.8 is installed before you run the installer. |
+| .NET 8 | Included with the RPA Agent, which ships as a self-contained x64 build. You do not need to install the .NET 8 runtime separately. |
+
+## Related topics
+
+- [Install OpCon RPA Agent and Netcom Relay](./installation-opcon-rpa.md)
+- [Security Settings](./rpa-security-settings.md)
+- [Service Accounts and Permissions](./rpa-permissions.md)
