@@ -30,9 +30,14 @@ OpCon Robotic Process Automation (RPA) continues automation through the **last m
 - [Acquiring a License](./acquiring-a-license-opcon-rpa.md)
 - [Installation](./installation-opcon-rpa.md)
 - [Service Accounts and Permissions](./rpa-permissions.md)
+- [Unattended Session](./rpa-unattended-session.md)
+- [RDP Login](./rpa-rdp-login.md)
+- [Permissions Troubleshooting](./rpa-permissions-troubleshooting.md)
 - [Cloud VPN Install](./install-cloud-vpn.md)
 - [Update](./update-opcon-rpa.md)
+- [Back Up and Restore the Database](./rpa-backup-restore.md)
 - [Mapping OpCon Properties](./mapping-opcon-properties.md)
+- [Importing and Exporting Tasks](./import-export-tasks-opcon-rpa.md)
 - [Troubleshooting](./troubleshooting-opcon-rpa.md)
 
 </div>
@@ -43,10 +48,16 @@ OpCon Robotic Process Automation (RPA) continues automation through the **last m
 
 <div style={{background: 'var(--ifm-card-background-color)', border: '1px solid var(--ifm-color-emphasis-400)', borderRadius: '10px', padding: '0.75rem 1rem'}}>
 
-### Robot Task
+### Task Types
 
+- [Task Types](./task-types-overview.md)
+- [Wildcard Matching](./rpa-wildcard-matching.md)
 - [Robot Task](./robot-task-rpa.md)
 - [RPA Security Settings](./rpa-security-settings.md)
+- [Web Macro](./web-macro-task.md)
+- [Native Clicks in Web Macros](./web-macro-native-clicks.md)
+- [Scan Document](./scan-document-task.md)
+- [Scan Models](./scan-document-scan-models.md)
 - [Copy a Task](./copy-task-rpa.md)
 - [Delete a Task](./delete-task-rpa.md)
 
