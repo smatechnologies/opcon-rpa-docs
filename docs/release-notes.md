@@ -7,6 +7,32 @@ doc_type: conceptual
 
 ## Summer 26
 
+### 1.2.1
+
+**NOTE**: This release does not require an ACS Plugin DLL update. See [Update - OpCon RPA Agent and ACS plugin](./update-opcon-rpa.md).
+
+2026 September
+
+# OpCon RPA Release 1.2.1 – What's New
+
+## Summary
+
+Release 1.2.1 fixes background Web Macro tasks being reported as failed, and starting slowly, on hosts that have a graphics driver installed. No configuration change is required.
+
+## Web Automation
+
+### What's New
+
+:white_check_mark: **CON-2332: Background Web Macro Task Reported as Failed Although Every Step Succeeded** A background Web Macro task could be reported as failed, with `Task Failed: OnEOCrashData`, even though the macro itself ran correctly from start to finish. Affected runs also took about a minute longer than usual. The browser was trying to use hardware-accelerated graphics in the Windows service session, which has no display to draw to; the resulting failure was recorded as an error on the task even though the browser recovered and the run completed. Background playback now uses software rendering, so the failure cannot happen. Browser startup takes about four seconds, and interactive recording and playback in the RPA Client are unchanged.
+
+:::note Which hosts were affected
+Hosts where the RPA Agent runs as a service **and** a graphics driver is installed — physical servers and workstations, and virtual machines with GPU passthrough. Virtual machines using a basic or hypervisor display adapter were not affected, because the browser already used software rendering on them.
+:::
+
+### Why This Matters
+
+A background Web Macro task's reported result now matches what the macro actually did. On an affected host the false failure was consistent rather than occasional, so scheduled jobs that depend on a Web Macro's exit status were failing routinely. If you had attributed those failures to the macros themselves, or built retries around them, that should no longer be necessary.
+
 ### 1.2.0
 
 **NOTE**: This release requires an ACS Plugin DLL update, and **do not downgrade from 1.2.0 to 1.1.0** — once 1.2.0 has started, 1.1.0 refuses to open the database and its service will not start. Back up the `DataCache` folder and `appsettings.json` before you update — see [Back Up and Restore the Database](./rpa-backup-restore.md). See also [Upgrade and Compatibility](#upgrade-and-compatibility) and [Update - OpCon RPA Agent and ACS plugin](./update-opcon-rpa.md).
