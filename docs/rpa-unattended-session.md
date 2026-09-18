@@ -111,14 +111,16 @@ To verify unattended operation, complete the following steps:
 4. Confirm no session is left on the host afterwards. Run `query session` in an elevated command prompt on the host — the execution user should not be listed.
 5. Run the task a second time to confirm a fresh sign-in happens each run.
 
-To confirm the Agent is running as Local System and holds the privileges it depends on, check the first lines of the current log in `C:\ProgramData\Continuous\OpCon RPAAgent\Logs\Agent`. The Agent records its service account and the privileges present in its process token every time it starts, in a line beginning `Agent identity:`. The same information appears on the Agent's status endpoint.
+To confirm the Agent is running as Local System and holds the privileges it depends on, check the first lines of the current log in `C:\ProgramData\Continuous\OpCon RPAAgent\Logs\Agent`. The Agent records its service account and the privileges present in its process token every time it starts, in a line beginning `Agent identity:`.
+
+The same information is available without opening the log, from the Agent's status endpoint: `GET https://<agent-host>:7047/api/status`, using the port from the Tray Client's **Https Url** field. The request needs the same API token that OpCon uses, as a bearer token. The response's `Capabilities` block carries the service account, whether it is Local System, and the three privileges the Agent depends on.
 
 ## Troubleshooting
 
 | Symptom | Cause | What to do |
 |---|---|---|
 | The task fails to start with an `RPA Client not found` error | No session exists for the execution user, and the task has no RDP login user | Set **RDP Login User (optional)** on the task, or have the account signed in on the host |
-| The task starts but its screen captures fail with an invalid handle error | The Windows desktop in the reused session has stopped drawing | The integration re-establishes the Remote Desktop connection on every run to prevent this. Check its log that a reconnect happened before the task started; if one did and the failure persists, collect the log and contact SMA Technologies support. See [What happens between runs](./rpa-rdp-login.md#what-happens-between-runs) |
+| The task starts but its screen captures fail with an invalid handle error | The Windows desktop in the reused session has stopped drawing | The integration re-establishes the Remote Desktop connection on every run to prevent this. Check its log that a reconnect happened before the task started; if one did and the failure persists, collect the log and contact Continuous support. See [What happens between runs](./rpa-rdp-login.md#what-happens-between-runs) |
 | The task fails reporting that the desktop could not be unlocked or switched | The two Windows security policies are missing, so the Agent could not unlock the locked session left by an earlier run | Apply both policies in [Security Settings](./rpa-security-settings.md) and reboot. Setting the earlier task's After Execution Behavior to **Log off user** also avoids leaving a locked session behind |
 | The Agent logs that a required privilege is not held | The service is not running as Local System, or a policy has removed a privilege it holds by default | Confirm with `sc qc RPA.Agent` that `SERVICE_START_NAME` is `LocalSystem`. Changing the account on the service's **Log On** tab is not supported |
 | The session is still signed in after a task with **Log off user** | An application cancelled the sign-out, or the Tray Client was no longer connected | Check the Agent's log for the recorded reason. Remove applications that prompt to save from the unattended host |
