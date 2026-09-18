@@ -119,9 +119,9 @@ The target session is unlocked before the task runs, if it was locked.
 | **Wait for user confirmation** | Shows the **External Task Request** window in the target session. The task waits until the user selects **Yes**. | Testing, or when a human gate is required. |
 | **Execute on session without prompt** | Runs the task on the user's session immediately, with no warnings or prompts. | Hands-off, scheduled automation. |
 
-The Wait for user confirmation window looks like this:
+**Wait for user confirmation** shows the same **External Task Request** window as the single-user same-user case, in the target session:
 
-![RPA confirmation window that the user must accept to start the task](../static/img/Tasks/Robot/execution-single-user-same-warn.png)
+![The External Task Request window, which the user must accept before the task starts](../static/img/Tasks/Robot/execution-single-user-same-warn.png)
 
 :::note RDP sessions
 When RPA locks a session, it does not end RDP connections. If the user was logged in through RDP, the connection remains active, but the session shows a lock screen.
