@@ -120,7 +120,7 @@ For the full procedure, including how to restore a backup and how to return to a
 
 If the considerations for your version say the ACS plugin update is **required**, replace the ACS Plugin DLL in your OpCon plugins directory using the same procedure as a new install.
 
-See [Step 4 of the installation procedure](./installation-opcon-rpa.md) — copy the new `sma.acs.OpConRPA.dll` into the plugins directory, overwriting the existing file.
+See [Step 3 of the installation procedure](./installation-opcon-rpa.md#step-3--copy-the-acs-plugin-dll) — copy the new `sma.acs.OpConRPA.dll` into the plugins directory, overwriting the existing file.
 
 If the considerations say the plugin update is **not required**, skip this step.
 
@@ -194,7 +194,7 @@ Most likely it has no stored execution user. 1.2.0 runs those tasks in their own
 No. The service runs as Local System before and after the update. The installer configures it every time, and there is nothing to choose.
 
 **How do I update the ACS plugin?**
-Replace `sma.acs.OpConRPA.dll` in your OpCon plugins directory with the new copy from OWI. The procedure is the same as a new install — see [Step 4 of the installation procedure](./installation-opcon-rpa.md).
+Replace `sma.acs.OpConRPA.dll` in your OpCon plugins directory with the new copy from OWI. The procedure is the same as a new install — see [Step 3 of the installation procedure](./installation-opcon-rpa.md#step-3--copy-the-acs-plugin-dll).
 
 **Why are my existing Network Credentials not working after updating to 1.0.2?**
 Version 1.0.2 fixed a bug where passwords for Network Credentials were not being saved. After updating, update the password on every Network Credential before using it with an Execution Context.
@@ -213,7 +213,7 @@ Use the [OpCon Web Installer (OWI)](https://github.com/smatechnologies/opcon-web
 | Term | Definition |
 |------|-----------|
 | RPA Agent | The agent that performs robot task automation on a target Windows machine. |
-| RPA Tray Client | The local Windows interface that runs alongside the RPA Agent, used to configure the OpCon API connection and tokens. |
+| RPA Tray Client | The local Windows interface that runs alongside the RPA Agent, used to configure the HTTPS URI and API token. |
 | ACS Plugin DLL | The OpCon Application Connection Studio plugin file (`sma.acs.OpConRPA.dll`) that lets the OpCon SAM communicate with the RPA Agent. |
 | Network Credential | A stored credential in the RPA Agent used by Robot tasks. Encrypted with the Windows Data Protection API. |
 | Execution Context | The configured rules for how a Robot Task interacts with the machine before and after it runs. Required for all Robot tasks starting in 1.0.2. |

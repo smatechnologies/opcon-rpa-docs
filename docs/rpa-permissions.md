@@ -41,12 +41,12 @@ The installer also registers an OpCon RPA **credential provider** — a DLL that
 | Grants the service account its rights | Nothing is granted. Local System already holds every local privilege, so the installer changes no Windows rights or folder permissions |
 | Installs and registers a credential provider | `InteractiveLogonCPx64.dll` is installed to `C:\Windows\System32` and registered under `HKEY_LOCAL_MACHINE` both as a COM server and as a Windows credential provider. The RPA Agent service uses it to unlock and switch desktop sessions when no one is at the machine |
 | Starts the Tray Client at every sign-in | An `RPATray` value under `HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Run` starts the Tray Client in the session of each user who signs in to the host |
-| Opens two inbound listeners (when the service runs) | HTTPS on the port shown in the Tray Client's **Https Url** field (7047 by default), which OpCon connects to; and net.tcp on port 9296, which the Tray Clients on that host connect to. Both listen on all network interfaces. |
+| Opens two inbound listeners (when the service runs) | HTTPS on the port shown in the Tray Client's **Https Url** field (7047 by default), which OpCon connects to; and net.tcp on port 9296, which the Tray Clients on that host connect to. **As shipped both bind to `localhost`**, so neither is reachable from another machine until the **Https Url** is changed to the host's own name or address. |
 
 :::note Credential provider in scope for a security review
 OpCon RPA installs its own credential provider rather than driving the built-in Windows one. Because the Windows sign-in interface loads it, include it in the scope of any review of the host. The RPA Agent service passes the automation account's credentials to it over a named pipe on the local machine; the credentials do not leave the host.
 
-It is installed on every host, and there is no supported install option that omits it. If your standards do not permit a third-party credential provider on the sign-in screen, raise it with SMA Technologies support before deploying.
+It is installed on every host, and there is no supported install option that omits it. If your standards do not permit a third-party credential provider on the sign-in screen, raise it with Continuous support before deploying.
 :::
 
 :::note Firewall
@@ -166,7 +166,7 @@ No. Changing the **Log On** tab leaves the service unable to prepare sessions, a
 Yes, on every host. It installs an OpCon RPA credential provider (`InteractiveLogonCPx64.dll`) to `C:\Windows\System32` and registers it under `HKEY_LOCAL_MACHINE`, so the Windows sign-in interface loads it. There is no install option that omits it. See [What the installer changes on the host](#what-the-installer-changes-on-the-host).
 
 **Which network ports does the RPA Agent open?**
-Two, both on all network interfaces while the service runs: the HTTPS port shown in the Tray Client's **Https Url** field (7047 by default), which OpCon connects to, and net.tcp port 9296, which the host's own Tray Clients connect to. The installer does not create a firewall rule for either.
+Two while the service runs: the HTTPS port shown in the Tray Client's **Https Url** field (7047 by default), which OpCon connects to, and net.tcp port 9296, which the host's own Tray Clients connect to. **As shipped both bind to `localhost` rather than to every network interface**, so neither is reachable from another machine until the **Https Url** is changed. The installer does not create a firewall rule for either.
 
 **Does the automation account have to be signed in before a task runs?**
 A Robot Task needs a session with its Tray Client connected. The session may be locked — the Agent unlocks it. Without a session at all, the task fails to start. Give the task an RDP login user and OpCon signs the account in first, so no one has to sign in on the host. See [RDP Login](./rpa-rdp-login.md).

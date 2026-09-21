@@ -1,4 +1,10 @@
 ---
+title: OpCon RPA
+description: "OpCon Robotic Process Automation: task types, installation, service accounts and permissions, unattended sessions, and orchestrating RPA tasks from OpCon."
+tags:
+  - Conceptual
+  - Automation Engineer
+  - RPA
 slug: '/'
 sidebar_label: 'OpCon RPA'
 hide_table_of_contents: true

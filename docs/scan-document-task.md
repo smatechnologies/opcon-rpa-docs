@@ -47,6 +47,7 @@ The mask accepts `*` and `?` — `statement-*.pdf` reads only the statements. Se
 Two things worth knowing:
 
 - Select the **Test** tab and then **Show filtered files** to see exactly which files the current filter matches, before you run anything.
+- A large batch can run into the time limit on background tasks. See [Background tasks have a runtime limit](./troubleshooting-opcon-rpa.md#background-tasks-have-a-runtime-limit).
 - If the filter matches no files, the task processes nothing and ends with a **Not found** result rather than a message about the filter. If a run appears to do nothing, check the filter first.
 
 ## Supported file types
@@ -65,7 +66,7 @@ Reading `.doc` or `.docx` drives an installed copy of Microsoft Word, one instan
 :::
 
 :::note Pages are matched by position
-Each region you mark belongs to a specific page of the document. A region on page 3 is read from page 3 of every document the task processes. Give a task a batch whose documents have a consistent page count — a document with fewer pages than the regions expect has nothing for those regions to read.
+Each region you mark belongs to a specific page of the document. A region on page 3 is read from page 3 of every document the task processes. Give a task a batch whose documents have a consistent page count — a region that refers to a page a document does not have fails the run rather than being skipped.
 :::
 
 ## What a region can read

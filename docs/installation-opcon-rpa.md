@@ -48,7 +48,7 @@ You also need:
 - Local administrator rights on the Windows system where the RPA Agent will run. These are needed to run the installer and to apply the [Security Settings](./rpa-security-settings.md) — not for day-to-day operation.
 
 :::note On-premises vs. cloud
-Netcom Relay is required only when integrating RPA with a cloud instance of OpCon CORE Automate / Solution Manager. On-premises installations skip Step 3.
+Netcom Relay is required only when integrating RPA with a cloud instance of OpCon CORE Automate / Solution Manager. On-premises installations skip Step 2.
 :::
 
 :::note Service account

@@ -63,15 +63,14 @@ To finish the installation, complete the following steps:
 
 1. Open [Installation - OpCon RPA Agent and Netcom Relay](./installation-opcon-rpa.md).
 2. Follow Steps 1 through 6 of that procedure.
-3. When Step 2 prompts for the Netcom Relay name in Solution Manager, enter the name you assigned to the Relay you installed in Step 1 of this page.
+3. When Step 1 of that procedure prompts for the Netcom Relay name in Solution Manager, enter the name you assigned to the Relay you installed in Step 1 of this page.
 
 ## Verify the installation
 
 After completing the standard installation, confirm:
 
 - The RPA Tray Client is running in the Windows system tray on the RPA Agent host.
-- In Solution Manager, the RPA agent shows as available under **Library** > **Agents**.
-- The RPA Agent can reach OpCon. (The "Get OpCon API Token" step in the main installation displays a success message when this is working.)
+- In Solution Manager, the RPA agent shows as available under **Library** > **Agents**. Because OpCon reaches this agent through Relay, an agent that shows as available confirms the whole path is working — the VPN tunnel, Relay, and the connection to the RPA Agent.
 
 :::note Relay and other agents
 A customer can be on VPN and use Relay at the same time. Relay communicates over the VPN tunnel rather than directly over the Internet. The RPA Agent is the only agent that routes through Relay — all other OpCon agents are unaffected.

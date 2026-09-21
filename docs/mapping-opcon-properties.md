@@ -152,6 +152,10 @@ After the Output Expression has been evaluated, the resulting values are visible
 
 The names inside `{OPCON(...)}` must exactly match the names defined in Solution Manager and mirrored in RPA.
 
+:::caution A name that does not match is replaced with nothing
+An `{OPCON(...)}` reference whose name RPA cannot resolve is replaced with an empty string. The step does not fail, so a mistyped name produces a blank value that flows into the rest of the task. Set a **Default value** on each Instance Property, and check the **Variable Preview** before relying on it.
+:::
+
 ## FAQs
 
 **Can I use multi-instance schedules to pass properties to RPA?**

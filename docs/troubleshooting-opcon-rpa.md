@@ -39,6 +39,21 @@ Every OpCon RPA component logs under one root on the host, `C:\ProgramData\Conti
 - RPA desktop tasks can only support recording workflow on the host system on which the OpCon RPA Tray Client is installed.
   - The RPA desktop recorder does not currently support the ability to replay workflow recorded on a remote virtual machine.
 
+## Background tasks have a runtime limit
+
+A Web Macro or Scan Document task runs in its own host process, and that process is bounded. The `HeadlessTaskMaxRuntimeMinutes` setting in `appsettings.json` ships set to **60** minutes; a task that exceeds it is failed with a timeout and its host process is terminated.
+
+The limit exists because these tasks are dispatched one at a time. Without a ceiling, a single task that hung would hold the queue and every background task behind it would wait indefinitely.
+
+| If you need | Do this |
+|---|---|
+| Longer than an hour for a legitimate task | Raise `HeadlessTaskMaxRuntimeMinutes` in `C:\Program Files\RPAAgent\appsettings.json` to a value comfortably above the longest task you expect |
+| No limit at all | Set it to `0`. A hung task then blocks every background task behind it until an operator intervenes |
+
+Two things follow from the tasks being dispatched serially. Two long background tasks scheduled to overlap will run one after the other, not together — so allow for that when you build the schedule. And the value is read when a task is dispatched, so changing it does not affect a task already running.
+
+Robot Tasks are not affected — they run through the interactive Tray Client rather than the background host.
+
 ## A Web Macro or Scan Document task fails with no execution user
 
 A Web Macro or Scan Document task runs in its own host process with no interactive session. That process is never run as Local System, and there is no fallback to the interactive RPA Tray Client. A task with no execution user therefore fails before it starts, reporting that the task has no execution context and no identity to run as.
@@ -50,6 +65,9 @@ To resolve it, open the task, set an execution user, and save it. Saving is what
 This affects every installation, so an existing task can start failing on a host that has not otherwise changed. See [Update - OpCon RPA Agent and ACS plugin](./update-opcon-rpa.md#120).
 
 ## FAQs
+
+**Why does a long Web Macro or Scan Document task fail after about an hour?**
+It has hit the runtime limit on background tasks, which ships at 60 minutes. See [Background tasks have a runtime limit](#background-tasks-have-a-runtime-limit).
 
 **Why did a Web Macro or Scan Document task that used to run stop running after the update to 1.2.0?**
 It probably has no stored execution user. Open the task, set an execution user, and save it — saving is what stores the value, and earlier versions never stored one for these task types. See the [options above](#a-web-macro-or-scan-document-task-fails-with-no-execution-user).

@@ -40,6 +40,8 @@ Each time OpCon starts a Robot Task, the integration asks the RPA Agent whether 
 | The Agent cannot resolve the execution user | Reports the error. The task does not start. |
 | The check itself fails | Opens an RDP connection anyway, as a fallback |
 
+A session counts as current while its Tray Client keeps reporting in. The Tray Client beats about every ten seconds and the Agent allows roughly twenty seconds before it treats a session as stale, so a single missed beat does not cause an unnecessary sign-in — but a session whose Tray Client has stopped is recognised within about half a minute.
+
 If you leave the RDP login user unset on a task, the whole check is skipped and the task starts directly. Use that for hosts where a person or another process keeps the session signed in.
 
 ## What you configure

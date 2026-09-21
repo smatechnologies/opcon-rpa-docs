@@ -25,6 +25,14 @@ The RPA Agent installer registers its own credential provider for this purpose: 
 Applying these policies requires local administrator rights on the RPA host. This is a one-time setup step. The accounts that run robot tasks do not need local administrator rights. See [Service Accounts and Permissions](./rpa-permissions.md).
 :::
 
+:::tip Check the current value before changing anything
+On a stand-alone host running a supported version of Windows, both policies are usually already at the value OpCon RPA needs, so there may be nothing to change and no reboot to take. What most often moves them is domain Group Policy, which can set either one the other way and reapply it later.
+
+Check both values first. If they are already correct, record that in your setup notes and move on. If a policy is set by Group Policy, the change has to be made there rather than locally, or it will be reverted at the next refresh.
+
+The Agent also reports the CTRL+ALT+DEL condition itself: if that policy is not set as OpCon RPA needs it, the Agent's log asks for it by name when it tries to unlock a session. See [Permissions Troubleshooting](./rpa-permissions-troubleshooting.md).
+:::
+
 ## 1. Do not require CTRL+ALT+DEL
 
 To make interactive logon work, you must disable SAS (Secure Attention Sequence).
@@ -54,8 +62,7 @@ This security setting determines whether pressing CTRL+ALT+DEL is required befor
 
 | Environment | Default |
 |---|---|
-| Domain-computers (Windows 8 and later) | Enabled |
-| Domain-computers (Windows 7 or earlier) | Disabled |
+| Domain-joined computers | Enabled, unless Group Policy sets it otherwise |
 | Stand-alone computers | Enabled |
 
 ## 2. User Account Control: Admin Approval Mode for the Built-in Administrator Account

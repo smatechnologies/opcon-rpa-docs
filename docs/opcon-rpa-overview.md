@@ -14,7 +14,7 @@ tags:
 
 OpCon RPA is the OpCon Robotic Process Automation product. It extends OpCon workload automation through the **last mile** by automating desktop, web, or hybrid processes that pause for human interaction. OpCon RPA is designed for US financial institutions — banks, credit unions, and insurance companies — that already use OpCon for workload automation and want to extend that automation into manual, UI-driven processes.
 
-This section describes how to install, configure, and operate OpCon RPA, and how to orchestrate OpCon RPA jobs from OpCon.
+This section describes how to install, configure, and operate OpCon RPA, and how to orchestrate OpCon RPA jobs from OpCon. It is the contents page for that material — for an introduction to what OpCon RPA is and what it automates, start with [Robotic Process Automation](./overview.md).
 
 ## In this section
 
@@ -57,20 +57,19 @@ This section describes how to install, configure, and operate OpCon RPA, and how
 
 ## FAQs
 
-**What does OpCon RPA automate that OpCon alone cannot?**
-OpCon RPA automates interactions with applications that lack APIs or scheduled-job interfaces — typically desktop or web applications that require keyboard and mouse input. OpCon orchestrates these RPA tasks alongside its existing workload automation.
-
 **Do I need Netcom Relay?**
 Netcom Relay is required when integrating RPA with a cloud instance of OpCon CORE Automate / Solution Manager. On-premises installations do not require Relay.
 
+For what OpCon RPA is and what it automates, see [Robotic Process Automation](./overview.md), which is the product introduction for this section.
+
 ## Glossary
+
+Terms specific to deploying and running OpCon RPA. For the product's own vocabulary — RPA, last mile, robot task — see the glossary on [Robotic Process Automation](./overview.md).
 
 | Term | Definition |
 |------|-----------|
-| RPA | Robotic Process Automation. Software that records and plays back human interactions (keystrokes, mouse actions) with applications that lack programmatic interfaces. |
 | RPA Agent | The agent that performs robot task automation on a target Windows machine. |
-| RPA Tray Client | The local Windows interface that runs alongside the RPA Agent, used to configure the OpCon API connection and tokens. It runs in a signed-in user's session under that user's account. |
+| RPA Tray Client | The local Windows interface that runs alongside the RPA Agent, used to configure the HTTPS URI and API token. It runs in a signed-in user's session under that user's account. |
 | Local System | `NT AUTHORITY\SYSTEM`, the built-in Windows account holding every local privilege. The account the RPA Agent service runs as. |
 | Netcom Relay | The OpCon component that routes communication between the OpCon Server and the RPA Agent for cloud installations. |
 | ACS Plugin DLL | The OpCon Application Connection Studio plugin file that lets the OpCon SAM communicate with the RPA Agent. |
-| Robot task | A recorded sequence of interactions that the RPA Agent plays back when triggered. |
