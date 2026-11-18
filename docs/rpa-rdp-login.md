@@ -1,7 +1,7 @@
 ---
 sidebar_label: 'RDP Login'
 title: OpCon RPA RDP login
-description: "How OpCon RPA signs a Windows user in over RDP before a Robot Task runs, what you configure on the OpCon integration and on the task, and which parts of a session are reused between runs."
+description: "How OpCon RPA signs a Windows user in over RDP before a foreground Robot Task runs, when it skips the sign-in, what you configure on the OpCon integration and on the task, and which parts of a session are reused between runs."
 tags:
   - Conceptual
   - System Administrator
@@ -14,14 +14,18 @@ hide_title: true
 
 ## What is it?
 
-A Robot Task drives an interactive Windows desktop, so it needs a signed-in session to run in. Without RDP login, someone has to sign in on the RPA host first, and RPA can only unlock a session that already exists.
+A Robot Task that runs in the foreground drives an interactive Windows desktop, so it needs a signed-in session to run in. Without RDP login, someone has to sign in on the RPA host first, and RPA can only unlock a session that already exists.
 
-RDP login removes that requirement. Before starting a Robot Task, OpCon opens a Remote Desktop connection to the RPA host and signs in as a Windows account you configured. That creates the interactive session the Robot Task needs, with no one at the machine.
+RDP login removes that requirement. Before starting a foreground Robot Task, OpCon opens a Remote Desktop connection to the RPA host and signs in as a Windows account you configured. That creates the interactive session the Robot Task needs, with no one at the machine.
 
 The connection is opened by the OpCon RPA integration, not by the RPA Agent service. The Agent still runs the task exactly as it does for a session a person signed in to.
 
 :::note Robot Tasks only
 Only Robot Tasks offer an RDP login user, because only a Robot Task drives the Windows desktop directly. The field does not appear on Web Macro or Scan Document tasks.
+:::
+
+:::note Background Robot Tasks need no sign-in
+Starting in 1.3.0, a Robot Task that runs in the background uses no Windows session, so it needs no RDP login, and RDP login does not apply on a Background only Agent. See [Background Robot Tasks need no session](./rpa-unattended-session.md#background-robot-tasks-need-no-session).
 :::
 
 :::tip RDP login is one part of unattended operation
@@ -34,6 +38,7 @@ Each time OpCon starts a Robot Task, the integration asks the RPA Agent whether 
 
 | Agent reports | What the integration does |
 |---|---|
+| The task will run in the background | Starts the task directly — no Remote Desktop connection and no sign-in. An ACS plugin earlier than 1.3.0 does not recognize this answer and opens the connection anyway |
 | The execution user has a current session | Reuses that session — nobody is signed in. A Remote Desktop connection to the host is still established first, as described in [What happens between runs](#what-happens-between-runs). |
 | No session for that user, or the session's heartbeat is stale | Opens an RDP connection, signs the user in, waits for the Agent to report the user ready, then starts the task |
 | The task ID does not exist | Reports the error. The task does not start. |
@@ -230,6 +235,7 @@ Yes, and Network Level Authentication is required. The host's certificate is not
 
 - [Unattended Session](./rpa-unattended-session.md)
 - [Robot Task](./robot-task-rpa.md)
+- [Background only Agent mode](./rpa-background-only-mode.md)
 - [Service Accounts and Permissions](./rpa-permissions.md)
 - [Permissions Troubleshooting](./rpa-permissions-troubleshooting.md)
 - [Security Settings](./rpa-security-settings.md)
@@ -238,7 +244,7 @@ Yes, and Network Level Authentication is required. The host's certificate is not
 
 | Term | Definition |
 |------|-----------|
-| RDP login | Signing a Windows account in on the RPA host over a Remote Desktop connection, so a Robot Task has an interactive session to run in. |
+| RDP login | Signing a Windows account in on the RPA host over a Remote Desktop connection, so a foreground Robot Task has an interactive session to run in. |
 | RDP login user | The Windows credential a Robot Task signs in as, chosen from the pool configured on the OpCon RPA integration. |
 | Network Level Authentication | A Remote Desktop feature that validates credentials before creating a desktop session. |
-| Readiness check | The question OpCon asks the RPA Agent before starting a task — whether the execution user already has a usable session. |
+| Readiness check | The question OpCon asks the RPA Agent before starting a task — whether the execution user already has a usable session, and whether the task will run in the background. |

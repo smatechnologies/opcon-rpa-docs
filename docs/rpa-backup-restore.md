@@ -65,8 +65,9 @@ To restore the database, complete the following steps:
 3. Rename the existing **DataCache** folder to `DataCache.old`. This is your way back if the restore turns out to be wrong.
 4. Extract your backup zip into `C:\Program Files\RPAAgent` so that a new **DataCache** folder is created with the backup's contents.
 5. Confirm the restored folder contains `SQLiteStorage.db`, and that no files are left over from the folder you renamed.
-6. Start the RPA Agent service.
-7. Open the RPA Tray Client and confirm your tasks are listed as expected.
+6. On a Background only Agent, run the installer for the installed version and select **Repair**.
+7. Start the RPA Agent service.
+8. Open the RPA Tray Client and confirm your tasks are listed as expected.
 
 Once you are satisfied with the restore, delete `DataCache.old`.
 
@@ -76,20 +77,20 @@ Extract the backup into a clean folder rather than overwriting the files in plac
 
 ## Return to an earlier version
 
-Use this when you have updated to 1.2.0 and need to go back to 1.1.0. It only works if you took a backup before the update.
+Use this when you have updated and need to go back to the version you updated from. It only works if you took a backup before the update.
 
 To return to an earlier version, complete the following steps:
 
-1. Confirm you have a backup taken **before** the update to 1.2.0. Without one, stop here — an earlier Agent cannot open a 1.2.0 database.
+1. Confirm you have a backup taken **before** the update. Without one, stop here — an earlier Agent cannot open the newer database.
 2. Stop the RPA Agent service and close the RPA Tray Client.
 3. Press the Windows key, enter `appwiz.cpl`, and press the **Enter** key.
 4. Select the entry named **RPA Agent** followed by the installed version number — for example **RPA Agent 1.2.0.123** — and select **Uninstall**.
-5. Restore your pre-update backup, following [Restore the database](#restore-the-database) from step 2. The uninstall leaves the `DataCache` folder in place, so there is still a 1.2.0 database there to replace.
+5. Restore your pre-update backup, following [Restore the database](#restore-the-database) steps 2 to 5. The uninstall leaves the `DataCache` folder in place, so the newer database is still there to replace.
 6. Run the installer for the earlier version and complete the installation.
 7. Start the RPA Agent service if it is not running, then confirm your tasks are listed in the Tray Client.
 
-:::caution Credentials added on 1.2.0 do not come back
-Credentials encrypted by 1.2.0 cannot be decrypted by 1.1.0. Your restored backup contains the credentials as they were before the update, so any credential added or changed while you were on 1.2.0 must be entered again after the downgrade.
+:::caution Credentials added on 1.2.0 do not come back to 1.1.0
+Credentials encrypted by 1.2.0 cannot be decrypted by 1.1.0. Your restored backup contains the credentials as they were before the update, so any credential added or changed while you were on 1.2.0 must be entered again.
 :::
 
 :::danger Going back further than 1.1.0 is unguarded

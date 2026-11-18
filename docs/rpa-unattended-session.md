@@ -1,7 +1,7 @@
 ---
 sidebar_label: 'Unattended Session'
 title: OpCon RPA unattended sessions
-description: "Run Robot Tasks on a host with nobody signed in — how OpCon creates the Windows session, how to secure the session afterwards, and how to verify the setup."
+description: "Run foreground Robot Tasks on a host with nobody signed in — how OpCon creates the Windows session, how to secure the session afterwards, how background Robot Tasks avoid the session altogether, and how to verify the setup."
 tags:
   - Procedural
   - System Administrator
@@ -14,9 +14,11 @@ hide_title: true
 
 ## What is it?
 
-A Robot Task drives an interactive Windows desktop, so it needs a signed-in session to run in. Before 1.2.0 that session had to be created by a person: someone signed in on the RPA host, locked the session, and OpCon RPA unlocked it for each run. After a reboot, the host sat idle until somebody signed in again.
+A Robot Task that runs in the foreground drives an interactive Windows desktop, so it needs a signed-in session to run in. Before 1.2.0 that session had to be created by a person: someone signed in on the RPA host, locked the session, and OpCon RPA unlocked it for each run. After a reboot, the host sat idle until somebody signed in again.
 
 An **unattended session** removes the person. OpCon signs the Windows account in over a Remote Desktop connection before the task runs, the task runs in that session, and the session is signed out afterwards. Nobody has to be at the machine, and no session is left standing between runs.
+
+A Robot Task that runs in the background, which 1.3.0 introduces, needs none of this. An unattended session is for the Robot Tasks that still need the desktop. See [Background Robot Tasks need no session](#background-robot-tasks-need-no-session).
 
 Unattended operation combines three things, each covered on this page:
 
@@ -28,7 +30,7 @@ Unattended operation combines three things, each covered on this page:
 
 ## How an unattended run works
 
-Each time OpCon starts a Robot Task that has an RDP login user, the following happens.
+Each time OpCon starts a Robot Task that has an RDP login user and runs in the foreground, the following happens. For a task that runs in the background, see [Background Robot Tasks need no session](#background-robot-tasks-need-no-session).
 
 1. OpCon asks the RPA Agent whether the task's execution user already has a usable session.
 2. OpCon opens a Remote Desktop connection to the RPA host. If there is no usable session, it signs the account in over that connection, creating the session.
@@ -36,9 +38,19 @@ Each time OpCon starts a Robot Task that has an RDP login user, the following ha
 4. The Agent hands the task to the RPA Tray Client running in that session, and the task runs at that account's privilege level.
 5. When the task finishes, the task's After Execution Behavior ends or secures the session.
 
-If a usable session already exists, no sign-in happens and there is no readiness wait — the task runs in the session that is already there. The Remote Desktop connection in step 2 is established either way, because a connection that has been idle stops drawing the desktop. See [What happens between runs](./rpa-rdp-login.md#what-happens-between-runs).
+If a usable session already exists, no sign-in happens and there is no readiness wait — the task runs in the session that is already there. The task runs only in a session that belongs to its execution user: a session another user has open is never used in its place. The Remote Desktop connection in step 2 is established either way, because a connection that has been idle stops drawing the desktop. See [What happens between runs](./rpa-rdp-login.md#what-happens-between-runs).
 
 For the detail of the readiness answer and what OpCon does with each result, see [RDP Login](./rpa-rdp-login.md#how-a-task-run-decides-whether-to-sign-in).
+
+## Background Robot Tasks need no session
+
+A Robot Task that runs in the background uses no Windows session. Which tasks do, and how such a run differs, is described in [Background and foreground execution](./robot-task-rpa.md#background-and-foreground-execution).
+
+The readiness check reports this to OpCon. With ACS plugin 1.3.0, OpCon then starts the task directly: it opens no Remote Desktop connection and signs nobody in, even when the job has an RDP login user. A Remote Desktop problem, such as an unreachable host or a wrong RDP password, therefore cannot fail a background run. The RDP login user is not checked for these runs, so a misconfigured one shows up only when a task needs the desktop.
+
+An earlier ACS plugin still opens the Remote Desktop connection for a job that has an RDP login user, although the background task does not use it. Update the plugin, or leave **RDP Login User (optional)** empty on jobs whose task always runs in the background.
+
+Robot Tasks saved before 1.3.0 keep running in the foreground, so they still need everything on the rest of this page. See [Tasks saved before 1.3.0](./robot-task-rpa.md#tasks-saved-before-130).
 
 ## Why run unattended
 
@@ -50,7 +62,7 @@ A Windows workstation edition adds a reason of its own: it supports a single int
 
 ## Set up an unattended session
 
-This procedure assumes OpCon RPA is already installed and connected to OpCon, and that the Windows account the task runs as is allowed to sign in through Remote Desktop on the RPA host.
+This procedure is for a Robot Task that runs in the foreground. It assumes OpCon RPA is already installed and connected to OpCon, and that the Windows account the task runs as is allowed to sign in through Remote Desktop on the RPA host.
 
 To set up unattended operation for a Robot Task, complete the following steps:
 
@@ -94,10 +106,11 @@ An unattended session changes who creates the session, not where the task runs.
 | Component | Runs as |
 |---|---|
 | The Remote Desktop connection that signs the account in | The OpCon RPA integration, on the OpCon side — not the RPA Agent |
-| The RPA Agent service | Local System |
-| The task itself | The execution user, inside that user's own session, through the Tray Client |
+| The RPA Agent service | Local System, on an Agent installed in Full mode (the default). An Agent installed in Background only mode runs no foreground tasks, so unattended sessions do not apply to it — see [Background only Agent mode](./rpa-background-only-mode.md) |
+| A foreground Robot Task | The execution user, inside that user's own session, through the Tray Client in that session |
+| A background Robot Task, Web Macro, or Scan Document task | The execution user, in a host process the Agent starts for the run, with no session |
 
-The task therefore acts with exactly the privileges of the execution user. The Agent's own privileges do not extend what a task can do.
+Either way, the task acts with exactly the privileges of the execution user. The Agent's own privileges do not extend what a task can do.
 
 ## Verify the setup
 
@@ -111,7 +124,7 @@ To verify unattended operation, complete the following steps:
 4. Confirm no session is left on the host afterwards. Run `query session` in an elevated command prompt on the host — the execution user should not be listed.
 5. Run the task a second time to confirm a fresh sign-in happens each run.
 
-To confirm the Agent is running as Local System and holds the privileges it depends on, check the first lines of the current log in `C:\ProgramData\Continuous\OpCon RPAAgent\Logs\Agent`. The Agent records its service account and the privileges present in its process token every time it starts, in a line beginning `Agent identity:`.
+To confirm the Agent is running as Local System and holds the privileges it depends on, check the first lines of the current log in `C:\ProgramData\Continuous\OpCon RPAAgent\Logs\Agent`. The Agent records its service account and the privileges present in its process token every time it starts successfully, in a line beginning `Agent identity:`.
 
 The same information is available without opening the log, from the Agent's status endpoint: `GET https://<agent-host>:7047/api/status`, using the port from the Tray Client's **Https Url** field. The request needs the same API token that OpCon uses, as a bearer token. The response's `Capabilities` block carries the service account, whether it is Local System, and the three privileges the Agent depends on.
 
@@ -119,7 +132,8 @@ The same information is available without opening the log, from the Agent's stat
 
 | Symptom | Cause | What to do |
 |---|---|---|
-| The task fails to start with an `RPA Client not found` error | No session exists for the execution user, and the task has no RDP login user | Set **RDP Login User (optional)** on the task, or have the account signed in on the host |
+| The task fails to start with `RPA Client for execution user '<user>' was not found` | The task runs in the foreground, no session with a running Tray Client exists for that user, and the task has no RDP login user. The message lists the sessions that are connected, so a session belonging to a different user is easy to spot | Set **RDP Login User (optional)** on the task, or have the account signed in on the host. If the task needs no desktop, let it run in the background instead. See [Background and foreground execution](./robot-task-rpa.md#background-and-foreground-execution) |
+| A Remote Desktop connection is still opened for a Robot Task that runs in the background | The ACS plugin is earlier than 1.3.0, so it does not know the task will run in the background | Update the ACS plugin, or leave **RDP Login User (optional)** empty on that job |
 | The task starts but its screen captures fail with an invalid handle error | The Windows desktop in the reused session has stopped drawing | The integration re-establishes the Remote Desktop connection on every run to prevent this. Check its log that a reconnect happened before the task started; if one did and the failure persists, collect the log and contact Continuous support. See [What happens between runs](./rpa-rdp-login.md#what-happens-between-runs) |
 | The task fails reporting that the desktop could not be unlocked or switched | The two Windows security policies are missing, so the Agent could not unlock the locked session left by an earlier run | Apply both policies in [Security Settings](./rpa-security-settings.md) and reboot. Setting the earlier task's After Execution Behavior to **Log off user** also avoids leaving a locked session behind |
 | The Agent logs that a required privilege is not held | The service is not running as Local System, or a policy has removed a privilege it holds by default | Confirm with `sc qc RPA.Agent` that `SERVICE_START_NAME` is `LocalSystem`. Changing the account on the service's **Log On** tab is not supported |
@@ -134,7 +148,7 @@ For sign-in failures, credential problems, and Remote Desktop errors, see [RDP L
 No. Only a Robot Task drives a desktop, so only a Robot Task offers an RDP login user and an After Execution Behavior. A Web Macro or Scan Document task runs in its own host process with no interactive session, so there is no session for you to create or secure — but it does need an execution user to run as. See [Task Types](./task-types-overview.md).
 
 **Does an unattended session require anything special from the Agent?**
-No. The Agent service runs as Local System on every installation, and OpCon does the work of creating the session. Nothing needs configuring on the host beyond the RDP login user on each task.
+No. The Agent service runs as Local System on every Full installation, which is the default, and OpCon does the work of creating the session. Nothing needs configuring on the host beyond the RDP login user on each task.
 
 **Can I keep using desktop unlock?**
 Yes. The Agent unlocks a session that is already signed in, and that continues to be supported. An unattended session is recommended rather than required — it is the only arrangement that leaves no signed-in desktop between runs.
@@ -152,7 +166,7 @@ So that no signed-in session is left on the host between runs. Because the next 
 Yes. Runs for the same account are serialized: the first creates the session and the rest wait for it.
 
 **What happens after the RPA host reboots?**
-Nothing needs doing. The next run of each task signs its account in. This is the main reason to move to unattended sessions.
+Nothing needs doing. The next run of each foreground task signs its account in, and background tasks need no session at all. This is the main reason to move to unattended sessions.
 
 ## Related topics
 
@@ -160,16 +174,19 @@ Nothing needs doing. The next run of each task signs its account in. This is the
 - [Service Accounts and Permissions](./rpa-permissions.md)
 - [Installation - OpCon RPA Agent and Netcom Relay](./installation-opcon-rpa.md)
 - [Robot Task](./robot-task-rpa.md)
+- [Task Types](./task-types-overview.md)
+- [Background only Agent mode](./rpa-background-only-mode.md)
 - [Permissions Troubleshooting](./rpa-permissions-troubleshooting.md)
 
 ## Glossary
 
 | Term | Definition |
 |------|-----------|
-| Unattended session | A Windows session created by OpCon over a Remote Desktop connection so a Robot Task can run with nobody signed in on the RPA host. |
-| Local System | `NT AUTHORITY\SYSTEM`, the built-in Windows account holding every local privilege. The account the RPA Agent service runs as. |
+| Unattended session | A Windows session created by OpCon over a Remote Desktop connection so a foreground Robot Task can run with nobody signed in on the RPA host. |
+| Background Robot Task | A Robot Task whose activities are all background-safe and whose **Force foreground** option is cleared. It runs in a host process as its execution user, with no Windows session. |
+| Local System | `NT AUTHORITY\SYSTEM`, the built-in Windows account holding every local privilege. The account the RPA Agent service runs as on a Full installation. |
 | Desktop unlock | The capability by which the RPA Agent unlocks and locks a Windows session that a person signed in to. |
-| Readiness check | The question OpCon asks the RPA Agent before starting a task — whether the execution user already has a usable session. |
+| Readiness check | The question OpCon asks the RPA Agent before starting a task — whether the execution user already has a usable session, and whether the task will run in the background. |
 | Execution user | The Windows account a task is configured to run as, whose session the task runs inside. |
 | RDP login user | The Windows credential OpCon signs in as over Remote Desktop, chosen from the pool configured on the OpCon RPA integration. |
 | After Execution Behavior | The action RPA takes after a task completes — sign the user out, lock the workstation, or leave the session unlocked. |

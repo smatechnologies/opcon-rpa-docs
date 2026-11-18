@@ -23,6 +23,8 @@ The regions you mark are collectively the **scan model**. Building one is the pa
 A Scan Document task does not drive a user interface, so it can run in its own host process with nobody signed in on the host. Building the task does need a desktop, because you mark the regions by hand. See [Unattended Session](./rpa-unattended-session.md).
 
 It does still need a Windows account to run *as*: the execution user set on the task. A task with no execution user fails, so set an Execution Context on the task. The task editor prompts you with the **Execution Context Required** window when it is missing — see [Task Types](./task-types-overview.md).
+
+On an Agent installed in Background only mode, the task runs as the Agent's own service account instead and has no execution user: saving the task on that Agent removes one. See [Background only Agent mode](./rpa-background-only-mode.md).
 :::
 
 ## What a task is made of
@@ -38,10 +40,10 @@ The task's **Scan document (local)** tab has two tabs of its own.
 
 The **File filter** tab decides which files a run processes. In the simplest case you set **Folder** to a directory and leave **Include file mask** at its default `*`.
 
-The mask accepts `*` and `?` — `statement-*.pdf` reads only the statements. Semicolons separate several masks, and **Is regex** switches the field to a regular expression instead. See [Wildcard Matching](./rpa-wildcard-matching.md).
+The mask accepts every wildcard — `statement-*.pdf` reads only the statements, and `statement-####.pdf` reads only the statements numbered with four digits. Semicolons separate several masks, and **Is regex** switches the field to a regular expression instead. See [Wildcard Matching](./rpa-wildcard-matching.md#file-and-folder-filters).
 
-:::caution `#` does not work in an include file mask
-**Folder** and **Include file mask** are resolved by Windows, which recognizes only `*` and `?` in a search pattern. A mask like `statement-####.pdf` matches nothing. Use `statement-*.pdf`, or turn on **Is regex** and write `statement-\d{4}\.pdf`. See [Wildcard Matching](./rpa-wildcard-matching.md#fields-that-support-wildcards).
+:::note `#` and `[list]` work in the include file mask starting in 1.3.0
+In earlier versions a mask such as `statement-####.pdf` matched nothing, because **Folder** and **Include file mask** accepted only `*` and `?`. Starting in 1.3.0 they accept every wildcard. A `#` or `[` in a mask now always acts as a wildcard, so review any mask that contains one.
 :::
 
 Two things worth knowing:
@@ -134,7 +136,7 @@ The region is re-read as soon as you change any of these, so you can see the eff
 
 | Symptom | Cause | What to do |
 |---|---|---|
-| The run processes nothing and comes back **Not found** | The file filter matched no files | Check **Folder** and **Include file mask** on the **File filter** tab, and use **Show filtered files** on the **Test** tab. Check the mask for a `#`, which never matches |
+| The run processes nothing and comes back **Not found** | The file filter matched no files | Check **Folder** and **Include file mask** on the **File filter** tab, and use **Show filtered files** on the **Test** tab |
 | A variable comes back empty | Recognition found nothing in that region | Open the task, select the region, and check the preview. Try the enhancement options, or enlarge the region |
 | No variable appears for a region at all | The region's **Output** tab is set to **Output to file**, which replaces the variable | Set it back to **Output to Task Variable** |
 | Results are poor after selecting a non-English language | The language could not be downloaded and recognition fell back to English | Confirm the host can reach `nuget.org`, then reselect the language and check the preview |
@@ -161,7 +163,7 @@ No. Recognition is designed for printed text.
 English immediately. Every other language has to be downloaded first, from **General Language Settings**, and that needs access to `nuget.org` from the machine.
 
 **Does it need a signed-in user?**
-No, but it does need an account to run as — its execution user. See [Unattended Session](./rpa-unattended-session.md).
+No, but it does need an account to run as — its execution user, or the Agent's service account on a Background only Agent. See [Unattended Session](./rpa-unattended-session.md).
 
 ## Related topics
 

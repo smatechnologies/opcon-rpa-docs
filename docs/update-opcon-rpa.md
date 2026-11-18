@@ -17,7 +17,7 @@ This page describes how to update an existing OpCon RPA installation. Updates ha
 
 1. Read the update considerations for the version you are moving to.
 2. Stop the RPA Agent service and the Tray Client.
-3. Back up your settings and database. Required before updating to 1.2.0.
+3. Back up your settings and database. Required before updating to 1.2.0 or later.
 4. Run the RPA Agent installer (and update the ACS plugin, if your version requires it).
 5. Verify the service and Tray Client are running, then apply any version-specific post-update tasks.
 
@@ -36,6 +36,45 @@ You need:
 ## Update considerations
 
 Read the entry for the version you are updating to **before** running the installer. Each entry tells you whether the ACS plugin must be updated and whether any post-update work is required.
+
+### 1.3.0
+
+:::warning Update allow-lists and security rules for the renamed program files
+1.3.0 renames the program files that still carried VisualCron names. Antivirus exclusions, application allow-lists, endpoint monitoring rules, and firewall rules that name the old files stop matching after the update, and a rule that blocks unknown programs can stop Web Macro tasks and web recording from starting. Update those rules before you update the Agent.
+
+The files are in `C:\Program Files\RPAAgent\TrayClient`. An update removes the files with the old names.
+
+| Old name | New name | What it is |
+|---|---|---|
+| `VisualCronWebMacro.exe` | `RPA.WebMacro.exe` | The worker process of the embedded browser that Web Macro tasks and web steps use. Shown in Task Manager under this name |
+| `VisualCron.WebBrowser.exe` | `RPA.WebBrowser.exe` | The browser that opens when you record a Robot Task with **Use web browser**, and when a Robot Task runs a web browser activity. Shown in Task Manager under this name |
+| `VisualCron.dll` | `RPA.VisualCron.dll` | Program library |
+| `VisualCron.Foundation.dll` | `RPA.VisualCron.Foundation.dll` | Program library |
+| `VisualCron.UI.dll` | `RPA.VisualCron.UI.dll` | Program library |
+| `VisualCron.UI.WPF.dll` | `RPA.VisualCron.UI.WPF.dll` | Program library |
+| `VisualCronAPI.dll` | `RPA.VisualCronAPI.dll` | Program library |
+| `VisualCronOCR.dll` | `RPA.VisualCronOCR.dll` | Program library |
+| `WebAutomation.dll` | `RPA.WebAutomation.dll` | Program library |
+| `UCWFDesigner.dll` | `RPA.UCWFDesigner.dll` | Program library |
+| `ImageTasks.Model.dll` | `RPA.ImageTasks.Model.dll` | Program library |
+| `ImageTasks.Services.dll` | `RPA.ImageTasks.Services.dll` | Program library |
+| `ScreenRecorder.dll` | `RPA.ScreenRecorder.dll` | Program library |
+
+When a Web Macro runs as an execution user who is not a local administrator, `RPA.WebMacro.exe` is also copied into that user's profile, under `%LOCALAPPDATA%\VisualCron\Tasks`, and runs from there. A rule keyed on the program's path needs to cover that folder too. The old `VisualCronWebMacro.exe` copy in the same folder is deleted automatically the first time the Tray Client or a background task starts as that user after the update.
+
+The renamed libraries carry the OpCon RPA version, 1.3.0.0, instead of a VisualCron version number. Tasks saved in earlier versions still open and run.
+:::
+
+| Topic | What to know |
+|-------|-------------|
+| ACS plugin update | **Recommended, not required.** A 1.3.0 Agent works with the plugin you already have. ACS plugin 1.3.0 skips the Remote Desktop sign-in for a Robot Task that runs in the background. See [Background Robot Tasks need no session](./rpa-unattended-session.md#background-robot-tasks-need-no-session) |
+| Robot Tasks saved before 1.3.0 | **Keep running in the foreground, unchanged.** 1.3.0 can run a Robot Task in the background, but a task saved before 1.3.0 counts as having **Force foreground** selected. Nothing migrates on update. See [Tasks saved before 1.3.0](./robot-task-rpa.md#tasks-saved-before-130) |
+| Agent mode | **The update keeps the installed mode.** 1.3.0 adds a choice of Agent mode at installation: **Full**, which runs as Local System exactly as every earlier version did, or **Background only**. An Agent updated from 1.2.x stays in Full mode, and the update shows no mode choice. To change the mode, see [Background only Agent mode](./rpa-background-only-mode.md#switch-modes) |
+| Installer | **Now shows a setup wizard.** Earlier installers had no pages. An update shows a welcome page and a ready-to-install page. See [Step 4](#step-4--run-the-rpa-agent-installer). A silent installation with `msiexec` runs as before |
+| Downgrade | **Not supported.** As with 1.2.0, once 1.3.0 has started, an earlier version refuses to open the database and its service does not start. Back up `DataCache` before you update. Starting with 1.3.0, the installer also refuses to install over a newer version, with the message `A newer version of RPA Agent <version you are installing> is already installed. To install an older version, uninstall the current version first.` See [Back Up and Restore the Database](./rpa-backup-restore.md) |
+| Wildcards in file and folder filters | `#`, `[list]`, and `[!list]` now work in a filter's **Folder** and **Include file mask**, where they used to match nothing. A `[` now always starts a character list, so a mask such as `log[1].txt` also matches `log1.txt`. Review masks and folder paths that contain `#` or `[`. See [Wildcard Matching](./rpa-wildcard-matching.md) |
+| Web Macro steps that write files | **Print page** now prints. A **Print page** step that uses Microsoft Print to PDF or Microsoft XPS Document Writer fails until you give it an output file. **Take screenshot** fails when its file cannot be saved, and a step whose credential cannot sign in fails instead of running as the task's own account. A task that reported success before may now report a failure that was always there. See [Web Macro](./web-macro-task.md#steps-that-write-files) |
+| API key | **Kept by the update.** You do not need to generate a new token or change the OpCon connection. If you select **Generate Token** later, answering **No** to the **Key Generation Warning** now keeps the existing key. In earlier versions the existing key had already been replaced by then |
 
 ### 1.2.0
 
@@ -102,8 +141,8 @@ To stop the RPA Agent service and Tray Client, complete the following steps:
 
 ## Step 2 — Back up your settings and database
 
-:::danger Required before updating to 1.2.0
-For 1.2.0 this step is not optional. The database records which Agent version last wrote to it, and 1.2.0 stamps that record the first time it starts — after which 1.1.0 will refuse to open it. A backup taken before the update is the only way back. See [Back Up and Restore the Database](./rpa-backup-restore.md).
+:::danger Required before updating to 1.2.0 or later
+For 1.2.0 and every later version this step is not optional. The database records which Agent version last wrote to it, and the new version stamps that record the first time it starts — after which the version you updated from refuses to open it. A backup taken before the update is the only way back. See [Back Up and Restore the Database](./rpa-backup-restore.md).
 :::
 
 To back up your RPA Agent settings and database, complete the following steps:
@@ -130,9 +169,17 @@ The RPA Agent Installer is named `RPAAgent_x.y.z.msi` (`x.y.z` is the version nu
 
 To run the update, complete the following steps:
 
-1. Run the `.msi` file.
-2. When Windows asks "Do you want to allow this app to make changes to your device?", select **Yes**.
-3. Wait for the installer to complete. The installer starts the Tray Client again when it finishes.
+1. Run the `.msi` file. The welcome page of the setup wizard is displayed.
+2. Select **Next**. The ready-to-install page is displayed. An update does not show the **Agent Mode** page, because it keeps the installed mode.
+3. Select **Install**.
+4. When Windows asks "Do you want to allow this app to make changes to your device?", select **Yes**.
+5. Wait for the installer to complete, then select **Finish**.
+
+The update is complete. On a Full mode Agent, the installer starts the Tray Client again when it finishes. On a Background only Agent it does not.
+
+:::note Updating to a version earlier than 1.3.0
+Installers before 1.3.0 show no wizard pages. After you run the `.msi` file and answer the Windows prompt, the installer runs to completion on its own.
+:::
 
 ## Step 5 — Verify the service and Tray Client are running
 
@@ -160,14 +207,21 @@ To verify and start the Tray Client, complete the following steps:
 3. After the Tray Client is open, you can minimize it to the tray. The Agent is then active and ready for use.
 
 :::note
-The installer also registers the Tray Client to start automatically when a user signs in to the host, so it normally comes back on its own after a restart.
+On a Full mode Agent, the installer also registers the Tray Client to start automatically when a user signs in to the host, so it normally comes back on its own after a restart. A Background only Agent runs its tasks without the Tray Client, so the Tray Client is not started automatically there. Open it from the Start menu when you need to edit tasks.
 :::
 
 ## Step 6 — Apply post-update tasks for your version
 
 After the service and Tray Client are running, apply any version-specific tasks listed in the [update considerations](#update-considerations) for the version you just installed.
 
-For example, if you updated to 1.2.0:
+If you updated to 1.3.0:
+
+- Confirm that antivirus, application allow-list, monitoring, and firewall rules name `RPA.WebMacro.exe` and `RPA.WebBrowser.exe` rather than the old file names. See the [1.3.0 considerations](#130).
+- Review any file or folder filter whose **Folder** or **Include file mask** contains `#` or `[`. Those characters are now matched as wildcards. See [Wildcard Matching](./rpa-wildcard-matching.md).
+- Give each Web Macro **Print page** step that uses Microsoft Print to PDF or Microsoft XPS Document Writer an output file. See [Web Macro](./web-macro-task.md#print-page).
+- Keep the backup you took in Step 2 until you are satisfied with the update. It is the only way back to 1.2.x.
+
+If you updated to 1.2.0:
 
 - Confirm the service runs as Local System. Run `sc qc RPA.Agent` in an elevated command prompt and check that `SERVICE_START_NAME` reads `LocalSystem`.
 - Confirm every Web Macro and Scan Document task has an execution user, and that each one has been saved since the update. Without a stored execution user those tasks fail. See the [1.2.0 considerations](#120).
@@ -182,16 +236,25 @@ If you updated to 1.0.2:
 ## FAQs
 
 **Do I need to update the ACS plugin every time I update OpCon RPA?**
-No. Check the update considerations for the version you are installing. Versions 1.0.1, 1.1.0, and 1.2.0 required an ACS plugin update; version 1.0.2 did not.
+No. Check the update considerations for the version you are installing. Versions 1.0.1, 1.1.0, and 1.2.0 required an ACS plugin update; version 1.0.2 did not. For 1.3.0 the update is recommended but not required.
 
 **Can I go back to 1.1.0 after updating to 1.2.0?**
 Not without restoring a backup. Once 1.2.0 has started, the database is stamped as 1.2.0 and 1.1.0 refuses to open it — its service will not start. Restore the `DataCache` folder from a backup taken before the update, and re-enter any credential added or changed since.
+
+**Can I go back to 1.2.x after updating to 1.3.0?**
+Not without restoring a backup, for the same reason: once 1.3.0 has started, 1.2.x refuses to open the database. Uninstall 1.3.0, install the earlier version, and restore the `DataCache` folder from a backup taken before the update. See [Back Up and Restore the Database](./rpa-backup-restore.md).
+
+**Can I switch an existing Agent to Background only mode by updating it?**
+No. An update keeps the installed mode. See [Switch modes](./rpa-background-only-mode.md#switch-modes).
+
+**Why do Web Macro tasks stop starting after updating to 1.3.0?**
+Find out whether an antivirus, application allow-list, or monitoring rule blocks `RPA.WebMacro.exe`, which replaced `VisualCronWebMacro.exe`. See the [1.3.0 considerations](#130).
 
 **Why does a Web Macro or Scan Document task fail after updating to 1.2.0?**
 Most likely it has no stored execution user. 1.2.0 runs those tasks in their own host process with no interactive session, that process is never run as Local System, and there is no fallback to a connected RPA Tray Client. Open the task, set an execution user, and save it. See [Troubleshooting](./troubleshooting-opcon-rpa.md).
 
 **Does updating change the account the RPA Agent service runs as?**
-No. The service runs as Local System before and after the update. The installer configures it every time, and there is nothing to choose.
+No. An update keeps the installed Agent mode, and with it the service account: Local System for a Full mode Agent, which every version before 1.3.0 installed, and `NT SERVICE\RPA.Agent` for a Background only Agent.
 
 **How do I update the ACS plugin?**
 Replace `sma.acs.OpConRPA.dll` in your OpCon plugins directory with the new copy from OWI. The procedure is the same as a new install — see [Step 3 of the installation procedure](./installation-opcon-rpa.md#step-3--copy-the-acs-plugin-dll).
@@ -203,10 +266,17 @@ Version 1.0.2 fixed a bug where passwords for Network Credentials were not being
 Version 1.0.2 made Execution Context required for all Robot tasks. Save and publish each existing Robot task with an Execution Context defined.
 
 **Should I back up my settings before updating?**
-Back up before updating to 1.2.0 — it is the only route back to 1.1.0. For other versions it is optional. To back up settings, copy `appsettings.json` and the `DataCache` folder from `C:\Program Files\RPAAgent` to a safe location.
+Yes, before updating to 1.2.0 or any later version — the backup is the only route back to the version you updated from. For earlier versions it is optional. To back up settings, copy `appsettings.json` and the `DataCache` folder from `C:\Program Files\RPAAgent` to a safe location.
 
 **Where do I download the installer and ACS plugin?**
 Use the [OpCon Web Installer (OWI)](https://github.com/smatechnologies/opcon-web-installer/releases). The RPA Agent Installer is in the **Agents** section; the ACS Plugin DLL is in the **Integrations** section.
+
+## Related topics
+
+- [Installation - OpCon RPA Agent and Netcom Relay](./installation-opcon-rpa.md)
+- [Back Up and Restore the Database](./rpa-backup-restore.md)
+- [Background only Agent mode](./rpa-background-only-mode.md)
+- [Release Notes](./release-notes.md)
 
 ## Glossary
 
@@ -219,3 +289,4 @@ Use the [OpCon Web Installer (OWI)](https://github.com/smatechnologies/opcon-web
 | Execution Context | The configured rules for how a Robot Task interacts with the machine before and after it runs. Required for all Robot tasks starting in 1.0.2. |
 | OpCon Web Installer (OWI) | A tool that bundles OpCon installer artifacts, including the ACS Plugin DLL and the RPA Agent Installer. |
 | DataCache | The folder under `C:\Program Files\RPAAgent` holding the local database of tasks, versions, and encrypted credentials. It survives an uninstall. |
+| Agent mode | How the RPA Agent service runs, chosen when the Agent is first installed: **Full** (Local System, every task type) or **Background only** (`NT SERVICE\RPA.Agent`, background tasks only). An update keeps it. |
