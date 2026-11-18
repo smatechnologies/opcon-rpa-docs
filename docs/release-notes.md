@@ -14,7 +14,7 @@ tags:
 
 ### 1.3.0
 
-**Released:** TBD
+**Released:** 2026 November
 
 **NOTE**: This release does not require an ACS Plugin DLL update, but the update is recommended. Until you update the plugin, OpCon still signs a job's RDP login user in over Remote Desktop before a Robot Task that runs in the background, including on a Background only Agent. **Do not downgrade from 1.3.0** — once 1.3.0 has started, an earlier version refuses to open the database and its service will not start. Back up the `DataCache` folder and `appsettings.json` before you update, and update antivirus, application allow-list, and monitoring rules for the renamed program files. See [Upgrade and Compatibility](#upgrade-and-compatibility-130).
 
