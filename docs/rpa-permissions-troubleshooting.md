@@ -24,7 +24,7 @@ Answer most privilege questions from this table before opening logs.
 
 | Component | Runs as | Needs | Does not need |
 |---|---|---|---|
-| **RPA Agent service** | Local System (`NT AUTHORITY\SYSTEM`) on an Agent installed in Full mode, the default. An Agent installed in Background only mode runs as `NT SERVICE\RPA.Agent` instead — see [Background only Agent mode](./rpa-background-only-mode.md) | Nothing. Local System already holds every local privilege, so the installer grants no rights and no folder permissions | Domain rights: as Local System it presents the computer account on the network, so it can reach no network resource as a user |
+| **RPA Agent service** | Local System (`NT AUTHORITY\SYSTEM`) on an Agent installed in Full mode, the default. An Agent installed in Background only mode runs as `NT SERVICE\RPA.Agent` instead — see [Background only Agent mode](./rpa-background-only-mode.md) | Nothing on a Full mode Agent. Local System already holds every local privilege, so the installer grants no rights and no folder permissions | Domain rights: as Local System it presents the computer account on the network, so it can reach no network resource as a user |
 | **RPA Tray Client** | The signed-in user | Only what that user already has. It requests no elevation. | Local administrator rights |
 | **Automation account** | Itself — in its own session for a foreground Robot Task, or in a host process the Agent starts for a background task | Only the rights the applications it drives require. For a background task, also **Log on as a batch job** or **Allow log on locally** on the host | Local administrator rights |
 | **Installer and security policies** | An administrator, once | Local administrator rights | Anything ongoing. Setup only. |

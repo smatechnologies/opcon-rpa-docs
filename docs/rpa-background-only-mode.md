@@ -34,7 +34,7 @@ Choose **Background only** when every task can run in the background, and runnin
 
 The trade-off is that one account does all the work. In Full mode a task can run as a real Windows user, with that user's access. In Background only mode every task, whoever authored it, runs as `NT SERVICE\RPA.Agent`, so every task can reach whatever that account can reach, including the Agent's own files.
 
-Both modes run tasks from a cold boot. A Background only Agent starts with Windows and needs nobody signed in. A Full Agent can sign a task's user in with RDP login when a foreground task needs a session. See [Unattended Session](./rpa-unattended-session.md).
+Both modes run tasks from a cold boot. A Background only Agent starts with Windows and needs nobody signed in. On a Full Agent, RDP login can sign a task's user in when a foreground task needs a session. See [Unattended Session](./rpa-unattended-session.md).
 
 The two modes differ in the following ways:
 
@@ -215,7 +215,8 @@ To switch an Agent to the other mode, complete the following steps:
 2. In **Programs and Features**, uninstall the entry named **RPA Agent** followed by the installed version number.
 3. Install the RPA Agent, selecting the other mode. See [Step 4 of the installation](./installation-opcon-rpa.md#step-4--install-the-rpa-agent).
 4. Apply the settings you noted in step 1 to the new `appsettings.json`, one setting at a time, and restart the RPA Agent service.
-5. Open the Tray Client and confirm your tasks are listed.
+5. If you set your own HTTPS certificate, run the installer for the installed version and select **Repair**.
+6. Open the Tray Client and confirm your tasks are listed.
 
 The Agent runs in the new mode with its tasks and credentials.
 
