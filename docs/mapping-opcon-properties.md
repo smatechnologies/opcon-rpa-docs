@@ -204,6 +204,6 @@ The section appears only in a Robot task whose workflow declares at least one va
 | Job Instance Property | A named value scoped to a single OpCon job instance, used to pass data into or out of RPA. |
 | Default value | The value RPA uses for an Instance Property when OpCon does not supply one — for example, during a Test Run or a run from the RPA Task Grid. |
 | Output Expression | An RPA expression evaluated after the task runs. The result is written back to the Instance Property and is visible in the Daily Schedule / Daily Job pages in Solution Manager. |
-| User Variable | An RPA variable scoped to the current task. Updated by the **Set variable** task. |
+| User Variable | A variable scoped to the current task. Updated by the **Set variable** task. |
 | RPA variable | A variable declared by an activity in a Robot task's workflow, referenced as `{RPA(name)}`. |
 | OPCON expression | The variable expression syntax used to reference an Instance Property in a task step: `{OPCON(SCHEDULE\|name)}` or `{OPCON(JOB\|name)}`. |

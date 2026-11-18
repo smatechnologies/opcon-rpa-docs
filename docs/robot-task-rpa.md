@@ -37,7 +37,7 @@ This page explains all of these.
 
 | What you want | On a single user machine | On a multi-user machine |
 |---------------|--------------------------|-------------------------|
-| Run with no Windows session at all | Use only background-safe activities and leave **Force foreground** cleared. See [Background and foreground execution](#background-and-foreground-execution) | Same as on a single user machine |
+| Run with no Windows session at all | Use only background-safe activities and clear **Force foreground**. See [Background and foreground execution](#background-and-foreground-execution) | Same as on a single user machine |
 | Keep a task in the interactive session even though it could run in the background | Select **Force foreground** | Select **Force foreground** |
 | Run automatically with no popups | Select **Lock other session** | Select **Execute on session without prompt** |
 | Approve each task before it runs | Select **Leave task in queue until user locks session** | Select **Wait for user confirmation** |
@@ -109,7 +109,7 @@ Otherwise the task runs in the foreground, as every Robot Task did before 1.3.0.
 
 The editor shows the resolved mode while you build the task. The RPA Agent makes the same check again from the published task each time it starts a run, and keeps the task in the foreground if it cannot read the workflow.
 
-On a Full mode Agent, every Robot Task needs a run-as user, in either mode. A background run uses that account to start the task's host process; a foreground run uses it to find and prepare the user's session.
+On a Full mode Agent, every Robot Task needs a run-as user, whether it runs in the background or the foreground. A background run uses that account to start the task's host process; a foreground run uses it to find and prepare the user's session.
 
 ### Which activities are background-safe
 
@@ -191,7 +191,7 @@ The exception is an Agent installed in Background only mode, where saving a task
 
 ### Let an existing task run in the background
 
-Before you start, confirm the task does not depend on the session of another task in its job. See [When to select Force foreground](#when-to-select-force-foreground).
+Before you start, confirm the task does not depend on the session of another task in its job, finishes within the runtime limit, and runs as a user with **Log on as a batch job** or **Allow log on locally** on the host. See [When to select Force foreground](#when-to-select-force-foreground).
 
 To let an existing Robot Task run in the background, complete the following steps:
 
@@ -217,7 +217,7 @@ Saving a published task stores it as a new version. An OpCon job set to use the 
 - **A runtime limit applies.** Background runs are stopped after 60 minutes by default. See [Background tasks have a runtime limit](./troubleshooting-opcon-rpa.md#background-tasks-have-a-runtime-limit)
 - **The log is in a different place.** The host process logs under `HeadlessRunner\<execution user>`. See [Where the logs are](./troubleshooting-opcon-rpa.md#where-the-logs-are)
 
-### Turn off background execution for Robot Tasks on an Agent
+### Keep every Robot Task on an Agent in the foreground
 
 The `RouteBackgroundRobotTasks` setting in `C:\Program Files\RPAAgent\appsettings.json` ships set to `true`. Set it to `false` to run every Robot Task on that Agent in the foreground, whatever each task's **Force foreground** setting says. Web Macro and Scan Document tasks are not affected.
 

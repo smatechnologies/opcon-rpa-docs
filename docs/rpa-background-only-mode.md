@@ -55,7 +55,7 @@ You choose the mode on the **Agent Mode** step of the installer, or with `AGENTM
 
 ### What Background only does reduce {#what-background-only-does-reduce}
 
-- The service has no administrator rights and only the **Bypass traverse checking** privilege, and the installer adds no Windows user rights assignments. **Impersonate a client after authentication**, the privilege a service would normally use to obtain a more powerful identity, is removed
+- The service has no administrator rights and only the **Bypass traverse checking** privilege, and the installer adds no Windows user rights assignments. **Impersonate a client after authentication** is removed
 - No credential provider is installed, so nothing from OpCon RPA is loaded by the Windows sign-in interface
 - The Agent never touches another user's desktop or session
 
@@ -149,7 +149,7 @@ The following settings take a credential:
 - The Web Macro **Upload file**, **Take screenshot**, **Print page**, **Save as PDF**, and **Extract table** steps, for the files they read or write
 - The Web Macro **Download file** step. When **Force download** is selected, as it is on every recorded Download step, the browser engine writes the file to its destination itself, so also grant the destination folder to the service account, or the share to the computer account
 
-To give the computer account access to a file share, grant `DOMAIN\COMPUTERNAME$` (for example, `CORP\RPA01$`) both the share permission and the folder's NTFS permission: **Change** and **Modify** to read and write, or **Read** and **Read & execute** to read only. Computer accounts are not searched by default in the **Select Users, Computers, Service Accounts, or Groups** window, so add **Computers** under **Object Types**. To manage several RPA Agents together, grant a domain group that contains their computer accounts. A computer picks up a new group membership only when it restarts.
+To give the computer account access to a file share, grant `DOMAIN\COMPUTERNAME$` (for example, `CORP\RPA01$`) both the share permission and the folder's NTFS permission: **Change** and **Modify** to read and write, or **Read** and **Read & execute** to read only. To manage several RPA Agents together, grant a domain group that contains their computer accounts.
 
 A Web Macro that opens an intranet site that signs in with integrated Windows authentication, without a prompt, signs in to the site as the computer account. Grant `DOMAIN\COMPUTERNAME$`, or a group that contains it, access in the site's own authorization settings. A site that shows a browser sign-in prompt needs a recorded **Authenticate** step to answer it. Without one, the task is aborted with `CredentialsModel is not found in current instance`. See [Web Macro Task](./web-macro-task.md).
 
@@ -170,7 +170,7 @@ Every file and folder a task touches is checked against `NT SERVICE\RPA.Agent`. 
 
 The service account has no access to signed-in users' profile folders, such as their **Desktop**, **Documents**, and **Downloads** folders. A path that worked in Full mode, or from the dashboard, can be denied in Background only mode. A Web Macro **Take screenshot** step that cannot save its file fails with `Could not save screenshot to '...'`.
 
-To let tasks use a folder other than the [work folder](#the-work-folder), grant `NT SERVICE\RPA.Agent` **Modify** on it, or **Read & execute** for read-only access. For example, `icacls "D:\RPA\Statements" /grant "NT SERVICE\RPA.Agent:(OI)(CI)M"`.
+To let tasks use a folder other than the [work folder](#the-work-folder), grant `NT SERVICE\RPA.Agent` **Modify** on it, or **Read & execute** for read-only access.
 
 ### The work folder {#the-work-folder}
 
@@ -191,7 +191,7 @@ Some files land in the service account's own Windows profile, not in a signed-in
 - The Web Macro browser cache, under `AppData\Local\VisualCron\WebMacroCache`
 - The copy of `RPA.WebMacro.exe` that Web Macro tasks run from, under `AppData\Local\VisualCron\Tasks` in that profile
 
-Look there, not in your own `%TEMP%` folder, when you collect diagnostics for a Background only Agent. The profile's path is listed in the `ProfileList` registry key under the service account's SID, which `sc showsid RPA.Agent` shows. Background task logs are written under `HeadlessRunner\RPA.Agent`. See [Where the logs are](./troubleshooting-opcon-rpa.md#where-the-logs-are).
+Look there, not in your own `%TEMP%` folder, when you collect diagnostics for a Background only Agent. The profile's path is listed in the `ProfileList` registry key under the service account's SID. Background task logs are written under `HeadlessRunner\RPA.Agent`. See [Where the logs are](./troubleshooting-opcon-rpa.md#where-the-logs-are).
 
 ## Change an Agent's mode {#switch-modes}
 

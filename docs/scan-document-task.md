@@ -43,7 +43,7 @@ The **File filter** tab decides which files a run processes. In the simplest cas
 The mask accepts every wildcard — `statement-*.pdf` reads only the statements, and `statement-####.pdf` reads only the statements numbered with four digits. Semicolons separate several masks, and **Is regex** switches the field to a regular expression instead. See [Wildcard Matching](./rpa-wildcard-matching.md#file-and-folder-filters).
 
 :::note `#` and `[list]` work in the include file mask starting in 1.3.0
-In earlier versions a mask such as `statement-####.pdf` matched nothing, because **Folder** and **Include file mask** accepted only `*` and `?`. Starting in 1.3.0 they accept every wildcard. A `[` now always starts a character list, so review any mask that contains one.
+In earlier versions a mask such as `statement-####.pdf` matched nothing, because **Folder** and **Include file mask** accepted only `*` and `?`. Starting in 1.3.0 they accept every wildcard. A `#` or `[` in a mask now always acts as a wildcard, so review any mask that contains one.
 :::
 
 Two things worth knowing:

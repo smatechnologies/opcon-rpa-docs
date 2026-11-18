@@ -69,7 +69,7 @@ Background only lets a machine run its automation without a user account. The RP
 
 - **CON-2361: Declining a New API Token Keeps the Existing One** Selecting **Generate Token** and answering **No** to the **Key Generation Warning** now keeps the existing API token, so OpCon stays connected. Previously the existing token had already been replaced by the time the warning appeared, and the new one was discarded. A token that cannot be generated now shows `No Token Generated.` instead of closing the Tray Client.
 
-- **CON-2758: Credential Options Saved When a Credential Is Added** The **Local login** and **Load user profile** options of a credential are now saved when the credential is first added, including credentials added through **Import Settings**. Previously they were saved only when an existing credential was updated.
+- **CON-2758: Credential Options Saved When a Credential Is Added** The **Local login** and **Load user profile** options of a credential are now saved when the credential is first added, including credentials added through **Import Settings**. Previously they were saved only when an existing credential was updated. A credential added in an earlier version was stored with both options cleared; select them again and save the credential.
 
 - **CON-2842: The RPA Agent Service Runs After an Update** An update could leave the RPA Agent service stopped, even though the installer finished without an error. The installer now starts the service after it removes the earlier version, so the service is running when the update finishes, including an update from 1.2.x.
 

@@ -26,7 +26,7 @@ OpCon RPA has three task types. Which one you build determines what you can auto
 Start from what the process touches.
 
 - **It uses a Windows application** — a teller platform, a core banking client, an ERP front end, Excel, Outlook. Use a **Robot Task**. This is the only type that drives the Windows desktop.
-- **It moves, reads, or writes files and folders, or works through list data**, with no application window involved. Use a **Robot Task** built only from background-safe activities. It runs in the background, with nobody signed in. See [Background and foreground execution](./robot-task-rpa.md#background-and-foreground-execution).
+- **It moves, reads, or writes files and folders, or works through list data**, with no application window involved. Use a **Robot Task** built only from background-safe activities, with **Force foreground** cleared. It runs in the background, with nobody signed in. See [Background and foreground execution](./robot-task-rpa.md#background-and-foreground-execution).
 - **It happens entirely in a browser** — a portal, a web form, a supplier site. Use a **Web Macro**. It runs against its own embedded browser rather than the user's, which is what lets it run with nobody signed in.
 - **It reads values out of documents** — invoices, statements, scanned forms. Use a **Scan Document** task. You mark the regions to read once, and every document that matches the file filter is read the same way.
 

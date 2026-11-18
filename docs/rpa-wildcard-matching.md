@@ -59,7 +59,7 @@ Two options change how the masks behave:
 :::note Corrected in 1.3.0: `#` and `[list]` in folders and the include mask
 Starting in 1.3.0, `#`, `[list]`, and `[!list]` work in **Folder**, **Exclude folder(s)**, and **Include file mask**. In earlier versions those characters matched nothing in **Folder** and **Include file mask**, so a mask such as `statement-####.pdf` found no files. If you worked around that, for example with `statement-*.pdf` or a regular expression, the workaround still matches as before.
 
-One pattern can now match more than it did. A `[` always starts a character list, so the mask `log[1].txt` matches `log1.txt` as well as a file literally named `log[1].txt`. Review any mask or folder path that contains a `[`.
+One pattern can now match more than it did. A `[` always starts a character list, so the mask `log[1].txt` matches `log1.txt` as well as a file literally named `log[1].txt`. Review any mask or folder path that contains a `#` or `[`.
 :::
 
 :::note Corrected in 1.2.0

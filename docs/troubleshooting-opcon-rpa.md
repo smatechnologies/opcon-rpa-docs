@@ -81,7 +81,7 @@ The limit exists because these tasks are dispatched one at a time. Without a cei
 
 Two things follow from the tasks being dispatched serially. Two long background tasks scheduled to overlap will run one after the other, not together — so allow for that when you build the schedule. And the value is read when a task is dispatched, so changing it does not affect a task already running.
 
-Robot Tasks that run in the foreground are not affected — they run through the interactive Tray Client rather than the background host. A Robot Task that has always run inside an hour as a foreground task is subject to the limit once it runs in the background.
+Robot Tasks that run in the foreground are not affected.
 
 ## A background task ends Aborted because its run-as user cannot log on
 
@@ -91,7 +91,7 @@ The RPA Agent starts a background task's host process by logging the run-as user
 
 The same text appears in the Agent's log, on the `Task failed` line for the run.
 
-Grant the run-as user, or a group it belongs to, **Log on as a batch job** on the RPA host, and make sure no **Deny log on as a batch job** or **Deny log on locally** policy applies to it. Either right is enough, but **Log on as a batch job** is the better one to grant, because the run is then recorded in the Windows security log as a batch logon. Windows grants **Allow log on locally** to ordinary users by default, so this failure usually means a policy removed it or a Deny policy applies. In a domain, check the Group Policy that sets User Rights Assignment, because it overrides a local change.
+Grant the run-as user, or a group it belongs to, **Log on as a batch job** on the RPA host, and make sure no **Deny log on as a batch job** or **Deny log on locally** policy applies to it.
 
 ## A Robot Task runs in the wrong mode
 
@@ -101,7 +101,7 @@ A Robot Task runs in the background only when its **Force foreground** option is
 |---|---|---|
 | A task you expected to run in the background runs in the foreground | The task was saved before 1.3.0, so it counts as **Force foreground** selected | Clear **Force foreground** in its Execution Context and publish it again. See [Let an existing task run in the background](./robot-task-rpa.md#let-an-existing-task-run-in-the-background) |
 | A task you expected to run in the background runs in the foreground | An activity needs the desktop, or the task plays back in Map mode | Read the indicator above the workflow designer on the **Robot** tab. It names the activity or setting |
-| A task you expected to run in the background runs in the foreground | `RouteBackgroundRobotTasks` is `false` in the Agent's `appsettings.json` | Set it to `true`. See [Turn off background execution for Robot Tasks on an Agent](./robot-task-rpa.md#turn-off-background-execution-for-robot-tasks-on-an-agent) |
+| A task you expected to run in the background runs in the foreground | `RouteBackgroundRobotTasks` is `false` in the Agent's `appsettings.json` | Set it to `true`. See [Keep every Robot Task on an Agent in the foreground](./robot-task-rpa.md#keep-every-robot-task-on-an-agent-in-the-foreground) |
 | A task you expected to run in the background runs in the foreground | The OpCon job runs a specific version of the task, published before the change | Set the job to the new version, or to use the latest version |
 | A task runs in the background but needed the desktop, or fails because a session it relied on is missing | The task relies on something outside its own activities, such as a session or an application that another task in the job opened | Select **Force foreground** on the task. See [When to select Force foreground](./robot-task-rpa.md#when-to-select-force-foreground) |
 
@@ -135,35 +135,12 @@ This affects every installation, so an existing task can start failing on a host
 
 When an Agent installed in Background only mode receives a task it cannot run, it does not start it. The task ends with the status **Aborted** within seconds, and the reason is recorded as the task's result text. Every reason starts with `This Agent is installed in Background only mode`. For what such an Agent runs, see [Background only Agent mode](./rpa-background-only-mode.md#what-a-background-only-agent-runs).
 
-The Agent checks for a foreground Robot task before it checks for a run-as user, so a task that has both reports Force foreground first.
-
-**Force foreground is selected, or the Robot task was saved before 1.3.0:**
-
-> This Agent is installed in Background only mode, which runs background tasks only. This Robot task runs in the foreground: Force Foreground is checked, or the task was saved before that setting existed, which counts as checked. To fix it, open the task in the RPA Client editor and save it: saving on this Agent turns Force Foreground off, and the task then runs in the background if none of its activities needs a desktop. Saving a published task stores it as a new version: an OpCon job set to Use latest runs the new version from its next run, but a job set to a specific version keeps running this one until the job's version is changed. Or run the task on an Agent installed in Full mode.
-
-To fix it, open and save the task on this Agent. See [Clear a run-as user or Force foreground from a task](./rpa-background-only-mode.md#clear-a-run-as-user-or-force-foreground-from-a-task).
-
-**An activity in the Robot task needs a desktop:**
-
-> This Agent is installed in Background only mode, which runs background tasks only. This Robot task needs an interactive desktop (first activity that needs one: *activity*), so it cannot run here. Run it on an Agent installed in Full mode.
-
-Replace the activity with a background-safe one, or run the task on a Full Agent.
-
-**The Robot task's activities could not be checked:**
-
-> This Agent is installed in Background only mode, which runs background tasks only. This Robot task's activities could not be checked for background safety (*detail*), so it cannot run here.
-
-Open the task in the editor and save it again. If the message persists, run the task on a Full Agent.
-
-**The task has a run-as user:**
-
-> This Agent is installed in Background only mode, which runs every task as the Agent's own service account. This task has a run-as user set ('*user*'), and this Agent cannot run a task as another user. To fix it, open the task in the RPA Client editor and save it: saving on this Agent removes the run-as user (Remove next to it under Execution Context does the same before you save). The stored credential is not deleted. Saving a published task stores it as a new version: an OpCon job set to Use latest runs the new version from its next run, but a job set to a specific version keeps running this one until the job's version is changed. Or run the task on an Agent installed in Full mode.
-
-When the stored name cannot be decrypted on this machine, the message reads `This task has a run-as user set (its stored name cannot be read on this machine).` instead. The fix is the same. See [Clear a run-as user or Force foreground from a task](./rpa-background-only-mode.md#clear-a-run-as-user-or-force-foreground-from-a-task).
-
-**The task's stored definition cannot be read:**
-
-> This Agent is installed in Background only mode, and this task's stored definition could not be read, so it cannot be checked for a run-as user. Open the task in the editor and save it again. Saving a published task stores it as a new version: an OpCon job set to Use latest runs the new version from its next run, but a job set to a specific version keeps running this one until the job's version is changed.
+| The result text says | What to do |
+|---|---|
+| `This Robot task runs in the foreground` | Open the task on this Agent and save it. See [Clear a run-as user or Force foreground from a task](./rpa-background-only-mode.md#clear-a-run-as-user-or-force-foreground-from-a-task) |
+| `This task has a run-as user set` | Open the task on this Agent and save it. See [Clear a run-as user or Force foreground from a task](./rpa-background-only-mode.md#clear-a-run-as-user-or-force-foreground-from-a-task) |
+| `This Robot task needs an interactive desktop` | Replace the activity it names, or run the task on a Full Agent |
+| `could not be checked for background safety` or `stored definition could not be read` | Open the task in the editor and save it again. If the message persists, run the task on a Full Agent |
 
 ## The Agent does not start because its mode and service account do not match {#agent-does-not-start-mode-mismatch}
 
