@@ -71,9 +71,13 @@ Background only lets a machine run its automation without a user account. The RP
 
 - **CON-2758: Credential Options Saved When a Credential Is Added** The **Local login** and **Load user profile** options of a credential are now saved when the credential is first added, including credentials added through **Import Settings**. Previously they were saved only when an existing credential was updated.
 
+- **CON-2842: The RPA Agent Service Runs After an Update** An update could leave the RPA Agent service stopped, even though the installer finished without an error. The installer now starts the service after it removes the earlier version, so the service is running when the update finishes, including an update from 1.2.x.
+
+- **CON-2927: Robot Task Help Opens the OpCon RPA Documentation** The in-product help link for Robot Tasks in the Tray Client opened a VisualCron page that no longer exists. It now opens the OpCon RPA [Robot Tasks](./robot-task-rpa.md) page.
+
 ##### Why This Matters
 
-A foreground Robot Task whose run-as user is signed out gets the Remote Desktop sign-in it needs, and a start that cannot succeed is refused at once with the reason. Log folders stay within a known size, and the log level can be raised to investigate a problem and lowered again without restarting the Agent. Saving the Agent settings no longer removes settings made by hand, and declining a new API token no longer breaks the connection to OpCon.
+A foreground Robot Task whose run-as user is signed out gets the Remote Desktop sign-in it needs, and a start that cannot succeed is refused at once with the reason. Log folders stay within a known size, and the log level can be raised to investigate a problem and lowered again without restarting the Agent. Saving the Agent settings no longer removes settings made by hand, and declining a new API token no longer breaks the connection to OpCon. An update no longer leaves the Agent stopped until someone starts it.
 
 #### Robot Task Activities and Variables
 
@@ -99,7 +103,7 @@ File and folder patterns accept the same wildcards everywhere, the Get Folders a
 
 - **CON-2782, CON-2662: File Steps Fail When Their Credential Cannot Be Used** When the credential on a **Download file**, **Upload file**, **Extract table**, or **Save as PDF** step cannot be used, the step now fails instead of carrying on as the account the task runs as. A credential with **Local login** selected that cannot sign in fails the step with `Could not impersonate credential with id '<id>' for '<path>': <reason>`. For any other credential, a wrong password shows up as an access error on the file the step reads or writes. The **Show filtered files** preview on a file filter's **Test** tab also reports a credential that cannot be used. For more information, see [Credentials on file steps](./web-macro-task.md#credentials-on-file-steps).
 
-- **CON-2377: Robot Recording with "Use web browser" Works Again** Recording a Robot Task with **Use web browser**, and the activities in the **Web Browser** section of the toolbox, failed to start in 1.2.x because the browser they open was built for an earlier version of the browser engine and could not load the one OpCon RPA ships. The browser, now `RPA.WebBrowser.exe`, is built for the shipped engine, and both work again.
+- **CON-2377, CON-2920: Robot Recording with "Use web browser" Works Again** Recording a Robot Task with **Use web browser**, and the activities in the **Web Browser** section of the toolbox, failed to start in 1.2.x because the browser they open was built for an earlier version of the browser engine and could not load the one OpCon RPA ships. The browser, now `RPA.WebBrowser.exe`, is built for the shipped engine, and both work again. The browser writes its log to `C:\ProgramData\Continuous\OpCon RPAAgent\Logs\TrayClient\<username>\webbrowser_log_<yyyymmdd>.log`. The log records the size of each message the browser exchanges, not the pages a task opens or the values it types. For more information, see [Where the logs are](./troubleshooting-opcon-rpa.md#where-the-logs-are).
 
 ##### Why This Matters
 

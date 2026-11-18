@@ -26,8 +26,9 @@ Every OpCon RPA component logs under one root on the host, `C:\ProgramData\Conti
 | RPA Agent service | `Agent` | `log<yyyymmdd>.txt` | Start here for anything about sessions, privileges, or dispatch |
 | RPA Tray Client | `TrayClient\<username>` | `trayclient_log_<yyyymmdd>.txt` | One folder per signed-in user, since each session runs its own Tray Client |
 | Background host process — Web Macro, Scan Document, and Robot Tasks that run in the background | `HeadlessRunner\<execution user>` | `headless-<yyyymmdd>.log` | One folder per account a task runs as, because the host process runs as that account. Its task log events are also forwarded to the Agent's log |
+| Robot web browser — recording with **Use web browser**, and the **Web Browser** activities | `TrayClient\<username>` | `webbrowser_log_<yyyymmdd>.log` | Written to the folder of the user the browser runs as. Records the size of each message the browser exchanges, not the pages a task opens or the values it types |
 
-Each component starts a new file every day, and also when the current file reaches 50 MB: the next file of the day carries a suffix, for example `log<yyyymmdd>_001.txt`. Each folder keeps its 14 newest files and deletes older ones, so the Agent and each Tray Client folder stay below about 700 MB. The limit for the background host applies per execution user's folder.
+Each component starts a new file every day, and also when the current file reaches 50 MB: the next file of the day carries a suffix, for example `log<yyyymmdd>_001.txt`. Each folder keeps its 14 newest files and deletes older ones, so the Agent and each Tray Client folder stay below about 700 MB. The limit for the background host applies per execution user's folder. The Robot web browser log is the exception: it starts a new file every day, with no size limit.
 
 A log line written while a task is running starts with `(task <task id>/proc <process id>)`, after the timestamp and level. The Agent log and the background host log both carry it, so searching for the process ID follows one run across both. Timestamps include milliseconds.
 
