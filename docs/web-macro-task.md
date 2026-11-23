@@ -1,7 +1,7 @@
 ---
 sidebar_label: 'Web Macro'
 title: OpCon RPA Web Macro tasks
-description: "How a Web Macro task automates a browser process — recording against the embedded browser, how elements are located, the waits that govern each step, and how data is extracted into variables."
+description: "How a Web Macro task automates a browser process — recording against the embedded browser, how elements are located, the waits that govern each step, how data is extracted into variables, and how the steps that write files report a failure."
 tags:
   - Conceptual
   - Automation Engineer
@@ -18,6 +18,8 @@ A Web Macro task automates a process that happens in a web browser. You record y
 Because the task drives its own browser rather than one on somebody's desktop, it does not need a signed-in Windows session. It can run on a host where nobody is logged in.
 
 It does need a Windows account to run *as*: the execution user set on the task. A task with no execution user fails, so set an Execution Context on the task. The task editor prompts you with the **Execution Context Required** window when it is missing — see [Task Types](./task-types-overview.md).
+
+On an Agent installed in Background only mode, the task runs as the Agent's own service account instead and has no execution user: saving the task on that Agent removes one. See [Background only Agent mode](./rpa-background-only-mode.md).
 
 :::note Web Macro or Robot Task?
 Use a Web Macro when the process happens entirely in a browser. It targets page elements directly, which survives the page moving or resizing, and it needs no desktop session.
@@ -141,6 +143,49 @@ You name the variable yourself — there is no automatic naming. Type a new name
 **Copy link** is the exception: it still offers a **Variable type:** choice of **User Variable** or **Job Variable**.
 :::
 
+## Steps that write files
+
+**Take screenshot**, **Print page**, **Download file**, and **Extract table** can write a file. **Take screenshot** and **Print page** fail when their file cannot be written, so a run that reports success has produced the file. **Download file** and **Extract table** fail when their credential cannot be used; see [Credentials on file steps](#credentials-on-file-steps).
+
+### Print page
+
+**Print page** sends the current page to a printer installed on the host. You set it up in the **Action - Print** window: select the printer under **Select printer** on the **Print** tab, then set the copies, orientation, and page range as needed.
+
+![The Action - Print window with an output file set](../static/img/Tasks/WebMacro/print-step-output-file-credential.png)
+
+A printer that saves to a file instead of paper, such as Microsoft Print to PDF or Microsoft XPS Document Writer, needs an output file, because nobody is present to answer its **Save As** prompt during a run. Enter the file in the **Output file (required for Microsoft Print to PDF / XPS Document Writer)** group, or select the browse button beside it.
+
+| Setting | What to know |
+|---|---|
+| Output file | Must be a full path, such as `C:\Output\statement.pdf` or `\\fileserver\statements\statement.pdf`. Variables are accepted. The window will not save the step while a file-saving printer has no output file: it reports `Printer '<name>' writes to a file. Set the output file on the Print step.` |
+| **Credential:** | Used only to write the output file to a network share. A file in a local folder is still written as the account the task runs as |
+| **Number of copies:** and the page range | Variables are accepted. An empty **Number of copies:** prints one copy |
+
+The step waits for the printer to finish, for up to 10 minutes, and then for the output file to be complete, so a later step never reads a partial file. When it succeeds, the task output shows `Printed page to '<file>' (<size> bytes)`, or `Printed page to '<printer>'` for a paper printer.
+
+The step fails, with the reason in the task output, when:
+
+- the printer is not installed on the host: `Printer '<name>' is not installed on this machine`
+- the output file is not a full path
+- the print job fails, is canceled, or does not finish within 10 minutes
+- the output file cannot be written: `Cannot write print output file '<file>' as <account>: <reason>`. When the step has no credential, the message also suggests setting one
+
+### Take screenshot
+
+**Take screenshot** saves an image of the page to the **Folder:** and **File name:** on its **Screenshot** tab. If the file cannot be saved, for example because the account has no access to the folder, the step fails with `Could not save screenshot to '<path>': <reason>`.
+
+The task output records what happened to the file: `Saving screenshot to '<path>': successful`, or `Saving screenshot to '<path>' skipped: the file exists` when **Overwrite options:** tells the step to keep an existing file.
+
+### Credentials on file steps
+
+**Take screenshot**, **Print page**, and **Save as PDF** each have a **Credential:** field for writing to a folder the task's own account cannot reach, typically a network share. **Download file** has one too. When **Force download** is selected, as it is on every recorded Download step, the browser engine writes the file to its destination itself, so also grant the destination folder to the account the task runs as. **Upload file** reads its files through a file filter, which has a credential of its own.
+
+If a step's credential cannot be used, for example a **Local login** credential whose password has changed, or an account that no longer exists, the step fails. It does not carry on as the account the task runs as. The message names the credential and the reason, for example `Could not impersonate credential with id '<id>' for '<path>': <reason>`. The same applies to **Upload file**, to **Extract table** when it writes to a file, and to the **Show filtered files** preview on a file filter's **Test** tab, which reports the error instead of listing files as the editing user.
+
+:::note Credentials on a Background only Agent
+On an Agent installed in Background only mode, every task runs as the Agent's service account and a step credential is used for network access only. See [Background only Agent mode](./rpa-background-only-mode.md).
+:::
+
 ## Clicks that open a new tab or window
 
 A browser only opens a new tab for a click it believes a person made, so a recorded click on such a link needs to be replayed as real mouse input rather than a scripted one. A click seen to open a window is always replayed that way; beyond that, the recorder's **Force native clicks** option decides whether every other recorded click is too. A task you create in 1.2.0 starts with it on.
@@ -158,15 +203,18 @@ This has its own page — see [Native Clicks in Web Macros](./web-macro-native-c
 | A task runs far slower than the process takes by hand | The default fixed pauses on every step | Lower them with **Set wait for all actions** |
 | A long-running task fails at the same point every time, about an hour in | The runtime limit on background tasks | See [Background tasks have a runtime limit](./troubleshooting-opcon-rpa.md#background-tasks-have-a-runtime-limit) |
 | Playback acts on the wrong tab, or a pop-up breaks the run | The task predates 1.2.0, or the page opens and closes windows in a way the recording did not capture | Browser tabs were only modelled properly in 1.2.0, so re-record a task made on an earlier version. If the task was recorded on 1.2.0, check the tab steps against what the page actually does — a page that opens a window and closes it again can leave a step that closes the wrong tab. Delete or disable that step, or record that part again |
+| A **Print page** step fails with `Printer '<name>' writes to a file. Set the output file on the Print step.` | The printer saves to a file, such as Microsoft Print to PDF, and the step has no output file | Open the step and enter a full path in the **Output file** group. See [Print page](#print-page) |
+| A step that saves or reads a file fails with `Could not impersonate credential with id '…'` | The step's credential cannot sign in, for example a **Local login** credential whose password changed | Update the credential's password, or select a different credential on the step. See [Credentials on file steps](#credentials-on-file-steps) |
+| A **Take screenshot** or **Print page** step that used to succeed now fails | The step now fails when its file is not written. Earlier versions reported success with no file | Read the reason in the task output, which names the file. Grant the account access to the folder, or set a **Credential:** on the step for a network share |
 | A step cannot be edited — **Edit action** does nothing | **Check element**, **Set proxy settings**, and **Authenticate** have no settings window, and a Web Macro has no properties panel | Delete the step and record that part of the process again |
 
 ## FAQs
 
 **Does a Web Macro need a signed-in user?**
-No. It runs in its own host process with no interactive session. It does need an account to run as — its execution user. See [Unattended Session](./rpa-unattended-session.md).
+No. It runs in its own host process with no interactive session. It does need an account to run as — its execution user, or the Agent's service account on a Background only Agent. See [Unattended Session](./rpa-unattended-session.md).
 
 **Which browser does it use?**
-An embedded browser that ships with OpCon RPA. It does not drive Chrome, Edge, or Firefox on the desktop, which is why it can run with nobody signed in.
+An embedded browser that ships with OpCon RPA. It does not drive Chrome, Edge, or Firefox on the desktop, which is why it can run with nobody signed in. Its worker processes appear in Task Manager as `RPA.WebMacro.exe`.
 
 **Can I edit a recording rather than starting over?**
 Yes — steps can be reordered, disabled, and edited individually. You cannot *add* to a recording by recording again, though: a saved recording replaces the whole sequence.
@@ -179,6 +227,12 @@ Usually. Tab and window handling is recorded, and clicks that open windows are r
 
 **Can it read a table off a page?**
 Yes, with **Extract table**, which can follow pagination. Its output goes to a file or the task output rather than to a variable.
+
+**Can a Web Macro print a page to PDF?**
+Yes. Add a **Print page** step, select Microsoft Print to PDF, and enter a full path in the step's output file. See [Print page](#print-page).
+
+**Can a step save a file to a network share?**
+Yes. Set a **Credential:** on the step that has access to the share. The credential is used for the network share only. See [Credentials on file steps](#credentials-on-file-steps).
 
 **Why is my task so slow?**
 Almost always the per-step fixed pauses, which default to 500 milliseconds before and after every step.
@@ -199,3 +253,4 @@ Almost always the per-step fixed pauses, which default to 500 milliseconds befor
 | Element path | The recorded route to an element on the page, used by the **Relative** identification mode. |
 | Frame path | The route to a frame within the page, when the target element sits inside one. |
 | Native click | A click replayed as real mouse input, which a browser treats as an action by a person. |
+| Output file | The file a **Print page** step writes when its printer saves to a file instead of paper, such as Microsoft Print to PDF. |

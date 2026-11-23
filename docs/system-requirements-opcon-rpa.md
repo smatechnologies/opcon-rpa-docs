@@ -41,7 +41,7 @@ Operating systems that have reached the end of Microsoft support are not support
 
 | Requirement | Details |
 |---|---|
-| .NET Framework 4.8 | Required by the RPA Tray Client and by the host process that runs Web Macro and Scan Document tasks. Windows Server 2022, Windows Server 2025, and Windows 11 include a compatible version. On Windows Server 2016 and Windows Server 2019, confirm .NET Framework 4.8 is installed before you run the installer. |
+| .NET Framework 4.8 | Required by the RPA Tray Client and by the host process that runs Web Macro tasks, Scan Document tasks, and Robot Tasks that run in the background. Windows Server 2022, Windows Server 2025, and Windows 11 include a compatible version. On Windows Server 2016 and Windows Server 2019, confirm .NET Framework 4.8 is installed before you run the installer. |
 | .NET 8 | Included with the RPA Agent, which ships as a self-contained x64 build. You do not need to install the .NET 8 runtime separately. |
 
 ## Related topics

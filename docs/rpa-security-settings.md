@@ -19,7 +19,11 @@ This page describes two Windows local security policies required for OpCon RPA t
 
 Two security settings are required for desktop session unlocking. These settings allow OpCon RPA to interact with the Windows Credential Provider, which is necessary for session management when a task runs.
 
-The RPA Agent installer registers its own credential provider for this purpose: it installs `InteractiveLogonCPx64.dll` to `C:\Windows\System32` and registers it under `HKEY_LOCAL_MACHINE` as a COM server and as a Windows credential provider, so the Windows sign-in interface loads it. The RPA Agent service, running as Local System, uses it to unlock and switch desktop sessions when no one is at the machine. The two policies below are what allow that exchange to complete. See [Service Accounts and Permissions](./rpa-permissions.md).
+On an Agent installed in Full mode, the default, the RPA Agent installer registers its own credential provider for this purpose: it installs `InteractiveLogonCPx64.dll` to `C:\Windows\System32` and registers it under `HKEY_LOCAL_MACHINE` as a COM server and as a Windows credential provider, so the Windows sign-in interface loads it. The RPA Agent service, running as Local System, uses it to unlock and switch desktop sessions when no one is at the machine. The two policies below are what allow that exchange to complete. See [Service Accounts and Permissions](./rpa-permissions.md).
+
+:::note When the policies are not needed
+The policies matter only when the Agent unlocks or switches a desktop session for a Robot Task that runs in the foreground. A task that runs in the background uses no session. An Agent installed in Background only mode installs no credential provider and never unlocks a session, so it does not need these policies. See [Background only Agent mode](./rpa-background-only-mode.md).
+:::
 
 :::note One-time administrator task
 Applying these policies requires local administrator rights on the RPA host. This is a one-time setup step. The accounts that run robot tasks do not need local administrator rights. See [Service Accounts and Permissions](./rpa-permissions.md).
@@ -97,7 +101,7 @@ This policy setting controls the behavior of Admin Approval Mode for the built-i
 The settings allow OpCon RPA to interact with the Windows Credential Provider for session management when it unlocks or switches a desktop session for a Robot Task.
 
 **Do I need these settings if all my Robot Tasks use an unattended session?**
-No. In an unattended session OpCon signs the account in over Remote Desktop, so there is no locked session for the Agent to unlock and neither policy comes into play. The credential provider is installed either way — it is installed on every host. See [Unattended Session](./rpa-unattended-session.md).
+No. In an unattended session OpCon signs the account in over Remote Desktop, so there is no locked session for the Agent to unlock and neither policy comes into play. Robot Tasks that run in the background use no session at all. The credential provider is installed either way on a Full mode Agent. See [Unattended Session](./rpa-unattended-session.md).
 
 **Do I need to reboot after changing the Admin Approval Mode setting?**
 Yes. After applying the Admin Approval Mode change, the computer must be rebooted.
@@ -109,16 +113,17 @@ Every supported version of Windows. Session management requires Windows 10 or hi
 No. Applying the policies is a one-time administrator task. Ongoing operation does not require local administrator rights. See [Service Accounts and Permissions](./rpa-permissions.md).
 
 **Which OpCon RPA component uses the Credential Provider?**
-The RPA Agent service, which runs as Local System. The Tray Client that runs the automation does not interact with the Credential Provider.
+The RPA Agent service, on an Agent installed in Full mode, where it runs as Local System. The Tray Client that runs the automation does not interact with the Credential Provider.
 
 **Does OpCon RPA install its own credential provider?**
-Yes, on every host. The installer installs `InteractiveLogonCPx64.dll` to `C:\Windows\System32` and registers it as a Windows credential provider, so the sign-in interface loads it, and the RPA Agent service passes credentials to it over a named pipe on the local machine. There is no install option that omits it. See [Service Accounts and Permissions](./rpa-permissions.md).
+Yes, on every Agent installed in Full mode. The installer installs `InteractiveLogonCPx64.dll` to `C:\Windows\System32` and registers it as a Windows credential provider, so the sign-in interface loads it, and the RPA Agent service passes credentials to it over a named pipe on the local machine. Starting in 1.3.0, an Agent installed in Background only mode does not install it; that mode runs only background tasks. See [Service Accounts and Permissions](./rpa-permissions.md) and [Background only Agent mode](./rpa-background-only-mode.md).
 
 ## Related topics
 
 - [Service Accounts and Permissions](./rpa-permissions.md)
 - [Permissions Troubleshooting](./rpa-permissions-troubleshooting.md)
 - [Robot Task](./robot-task-rpa.md)
+- [Background only Agent mode](./rpa-background-only-mode.md)
 
 ## Glossary
 

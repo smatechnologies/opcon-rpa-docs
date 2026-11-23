@@ -35,6 +35,7 @@ OpCon Robotic Process Automation (RPA) continues automation through the **last m
 - [System Requirements](./system-requirements-opcon-rpa.md)
 - [Acquiring a License](./acquiring-a-license-opcon-rpa.md)
 - [Installation](./installation-opcon-rpa.md)
+- [Background Only Agent Mode](./rpa-background-only-mode.md)
 - [Service Accounts and Permissions](./rpa-permissions.md)
 - [Unattended Session](./rpa-unattended-session.md)
 - [RDP Login](./rpa-rdp-login.md)

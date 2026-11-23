@@ -11,6 +11,7 @@ module.exports = {
         'system-requirements-opcon-rpa',
         'acquiring-a-license-opcon-rpa',
         'installation-opcon-rpa',
+        'rpa-background-only-mode',
         {
           type: 'category',
           label: 'Permissions and Troubleshooting',

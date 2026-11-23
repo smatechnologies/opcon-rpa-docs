@@ -144,6 +144,10 @@ Select one of the following options:
 
 ![Entering the password for a missing credential](../static/img/ImportExport/credential-edit-form.png)
 
+:::note Importing on a Background only Agent
+An Agent installed in Background only mode runs every task as its own service account, so an imported task's run-as user is removed when the task is stored. The stored credential is kept. If the **Missing Credentials** window asks for a credential, the window where you enter it explains that **Local login** and **Load user profile** do not apply, because this Agent uses a credential for network access only. See [Background only Agent mode](./rpa-background-only-mode.md).
+:::
+
 :::note Drafts do not need a credential
 A draft is an unfinished task, and a credential is only required when you finalize a task. RPA does not ask for credentials when you import a draft that has none. You can finish the draft and assign a credential later.
 :::

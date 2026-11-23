@@ -21,7 +21,7 @@ The round trip looks like this:
 2. In the task   The task references {OPCON(SCHEDULE|name)} or {OPCON(JOB|name)}.
 3. RPA → OpCon   When the task ends, RPA evaluates the Output Expression and
                  writes the result back to the Instance Property — visible in the
-                 Daily Schedule and Daily Job screens in Solution Manager.
+                 Daily Schedule and Daily Job pages in Solution Manager.
 ```
 
 OpCon supports two scopes for an Instance Property:
@@ -64,9 +64,9 @@ You do not have to define a property in Solution Manager just to receive output 
 
 ## Step 2 — Mirror the Instance Property in RPA
 
-RPA's Variables screen has a section called **OpCon Variables**, which expands to **Schedule Instance Properties** and **Job Instance Properties**.
+The **RPA Variables** window has a section called **OpCon variables**, which expands to **Schedule Instance Properties** and **Job Instance Properties**.
 
-![RPA Variables screen showing the OpCon Variables section with Schedule and Job Instance Property entries](../static/img/opcon_property_mapping/RPA_newvarscreen.png)
+![RPA Variables window showing the OpCon Variables section with Schedule and Job Instance Property entries](../static/img/opcon_property_mapping/RPA_newvarscreen.png)
 
 Add a new entry under the matching scope and fill in the edit form. The same form is used for both Schedule and Job Instance Properties.
 
@@ -82,7 +82,7 @@ Add a new entry under the matching scope and fill in the edit form. The same for
 
 ### About the Output Expression
 
-The Output Expression is evaluated as an RPA expression. Anything available on the RPA Variables screen can be used — *User Variables*, *Builtin Functions* (Math, File variables, and so on), and string literals.
+The Output Expression is evaluated as an RPA expression. Anything available on the RPA Variables window can be used — *User Variables*, *Builtin Functions* (Math, File variables, and so on), and string literals.
 
 ![RPA edit form showing an Output Expression that uses a Builtin Function to read airports.txt](../static/img/opcon_property_mapping/RPA_definesi.png)
 
@@ -99,7 +99,7 @@ To update an Instance Property based on something that happens during the task, 
 :::
 
 :::tip Test the Output Expression
-Use the **Variable Key** and **Variable Preview** fields on the RPA Variables screen to test your output expressions before you run the task end to end.
+Use the **Variable Key** and **Value Preview** fields on the RPA Variables window to test your output expressions before you run the task end to end.
 :::
 
 ## Step 3 — Reference the property in a task
@@ -111,13 +111,25 @@ To use an Instance Property inside a task step, use the OpCon variable expressio
 
 To insert one of these expressions into a task step, complete the following steps:
 
-1. Open the Variables screen of the task.
+1. Open the **RPA Variables** window of the task.
 2. Find the Instance Property you defined in Step 2.
 3. Reference it from a step using the OpCon variable expression syntax above.
 
-![RPA Variables screen with the Instance Property selected](../static/img/opcon_property_mapping/RPA_example_modifying_step_to_use_si.png)
+![RPA Variables window with the Instance Property selected](../static/img/opcon_property_mapping/RPA_example_modifying_step_to_use_si.png)
 
 ![RPA task step that references the Instance Property using the OPCON expression syntax](../static/img/opcon_property_mapping/RPA_example_modifying_step_to_use_si2.png)
+
+### RPA variables in a Robot task
+
+In a Robot task, the **RPA Variables** window can also list an **RPA variables** section, between **OpCon variables** and **User variables**. It lists the variables that activities in the task's workflow declare, such as the variable an activity saves its result to, sorted by name. Select an entry to see its `{RPA(name)}` expression in **Variable Key**, ready to copy into a step with **Copy to clipboard**. The expression is written for you, including names that start with a symbol or contain a comma, so you do not have to type it from memory.
+
+![The RPA Variables window with the RPA variables section expanded](../static/img/VariableSelector/rpa-variables-section.png)
+
+The section is shown only when the workflow declares at least one variable. An activity that is disabled does not contribute its variables. Two variables whose names differ only by case, such as `fileWasFound` and `FileWasFound`, are listed separately.
+
+:::note The RPA variables section lists the saved workflow in an activity's settings window
+When you open the **RPA Variables** window from an activity's own settings window, the section lists the variables of the workflow as it was last saved. Save the task to see variables from activities you have just added.
+:::
 
 ## Step 4 — Verify the round trip
 
@@ -133,7 +145,7 @@ In the screenshot, the sample task has run from the Task Grid. The Robot task ha
 
 ### 4b. Run from Solution Manager (real values)
 
-When the task runs from Solution Manager, OpCon supplies the Instance Property values defined on the schedule and job. After the task ends, the Output Expression result appears on the Daily Job and Daily Schedule screens.
+When the task runs from Solution Manager, OpCon supplies the Instance Property values defined on the schedule and job. After the task ends, the Output Expression result appears on the Daily Job and Daily Schedule pages.
 
 ![RPA task output when started by Solution Manager: Notepad showing the OpCon-supplied Instance Property values](../static/img/opcon_property_mapping/RPA_running_task_from_SM.png)
 
@@ -141,9 +153,9 @@ In the screenshot, the sample task has run from Solution Manager. The Robot task
 
 After the Output Expression has been evaluated, the resulting values are visible in Solution Manager:
 
-![Solution Manager Daily Job screen showing the Instance Property updated by the Output Expression](../static/img/opcon_property_mapping/RPA_running_task_after_SM_ji.png)
+![Solution Manager Daily Job page showing the Instance Property updated by the Output Expression](../static/img/opcon_property_mapping/RPA_running_task_after_SM_ji.png)
 
-![Solution Manager Daily Schedule screen showing the Instance Property updated by the Output Expression](../static/img/opcon_property_mapping/RPA_running_task_after_SM_si.png)
+![Solution Manager Daily Schedule page showing the Instance Property updated by the Output Expression](../static/img/opcon_property_mapping/RPA_running_task_after_SM_si.png)
 
 ## Reference — variable expression syntax
 
@@ -153,7 +165,7 @@ After the Output Expression has been evaluated, the resulting values are visible
 The names inside `{OPCON(...)}` must exactly match the names defined in Solution Manager and mirrored in RPA.
 
 :::caution A name that does not match is replaced with nothing
-An `{OPCON(...)}` reference whose name RPA cannot resolve is replaced with an empty string. The step does not fail, so a mistyped name produces a blank value that flows into the rest of the task. Set a **Default value** on each Instance Property, and check the **Variable Preview** before relying on it.
+An `{OPCON(...)}` reference whose name RPA cannot resolve is replaced with an empty string. The step does not fail, so a mistyped name produces a blank value that flows into the rest of the task. Set a **Default value** on each Instance Property, and check the **Value Preview** before relying on it.
 :::
 
 ## FAQs
@@ -174,7 +186,15 @@ No. Output Expressions add the property to the daily schedule or job after the t
 Yes. The Output Expression is evaluated whether the task succeeds or fails.
 
 **Can I test the Output Expression before running the task?**
-Yes. Use the **Variable Key** and **Variable Preview** fields on the RPA Variables screen to test the expression before running the task end to end.
+Yes. Use the **Variable Key** and **Value Preview** fields on the RPA Variables window to test the expression before running the task end to end.
+
+**Why does the RPA Variables window not show the RPA variables section?**
+The section appears only in a Robot task whose workflow declares at least one variable from an activity that is not disabled. See [RPA variables in a Robot task](#rpa-variables-in-a-robot-task).
+
+## Related topics
+
+- [Robot Task](./robot-task-rpa.md)
+- [Task Types](./task-types-overview.md)
 
 ## Glossary
 
@@ -183,6 +203,7 @@ Yes. Use the **Variable Key** and **Variable Preview** fields on the RPA Variabl
 | Schedule Instance Property | A named value scoped to a single OpCon schedule instance, used to pass data into or out of RPA. |
 | Job Instance Property | A named value scoped to a single OpCon job instance, used to pass data into or out of RPA. |
 | Default value | The value RPA uses for an Instance Property when OpCon does not supply one — for example, during a Test Run or a run from the RPA Task Grid. |
-| Output Expression | An RPA expression evaluated after the task runs. The result is written back to the Instance Property and is visible in the Daily Schedule / Daily Job screens in Solution Manager. |
-| User Variable | An RPA variable scoped to the current task. Updated by the **Set variable** task. |
+| Output Expression | An RPA expression evaluated after the task runs. The result is written back to the Instance Property and is visible in the Daily Schedule / Daily Job pages in Solution Manager. |
+| User Variable | A variable scoped to the current task. Updated by the **Set variable** task. |
+| RPA variable | A variable declared by an activity in a Robot task's workflow, referenced as `{RPA(name)}`. |
 | OPCON expression | The variable expression syntax used to reference an Instance Property in a task step: `{OPCON(SCHEDULE\|name)}` or `{OPCON(JOB\|name)}`. |

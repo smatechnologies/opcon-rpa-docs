@@ -22,7 +22,7 @@ OpCon RPA is an OpCon extension with exponential implications.
 
 **OpCon RPA** is designed for banks, credit unions, and insurance companies for use in tandem with OpCon, extending its functionality and usefulness.
 
-OpCon RPA has three task types — Robot, Web Macro, and Scan Document. A Robot Task drives an interactive desktop; Web Macro and Scan Document tasks run in their own host process and need no signed-in Windows session. See [Task Types](./task-types-overview.md).
+OpCon RPA has three task types — Robot, Web Macro, and Scan Document. A Robot Task that drives the desktop runs in an interactive Windows session. Web Macro and Scan Document tasks, and Robot Tasks built only from activities that need no desktop, run in their own host process and need no signed-in Windows session. See [Task Types](./task-types-overview.md).
 
 ## FAQs
 
@@ -33,7 +33,7 @@ OpCon RPA automates interactions with applications that lack APIs or scheduled-j
 OpCon RPA is designed for US financial institutions — banks, credit unions, and insurance companies — that already use OpCon for workload automation and want to extend that automation into manual, UI-driven processes.
 
 **What Windows permissions does OpCon RPA require?**
-The RPA Agent service runs as Local System, which is what lets it unlock and switch desktop sessions with nobody at the keyboard. There is nothing to choose during installation. The accounts that run tasks are separate, run at their own privilege level, and do not need local administrator rights. See [Service Accounts and Permissions](./rpa-permissions.md).
+It depends on the Agent mode chosen during installation. In Full mode, the default, the RPA Agent service runs as Local System, which is what lets it unlock and switch desktop sessions with nobody at the keyboard. The accounts that run tasks are separate, run at their own privilege level, and do not need local administrator rights. In Background only mode, the service and every task run as the virtual account `NT SERVICE\RPA.Agent`, with no administrator rights. See [Service Accounts and Permissions](./rpa-permissions.md).
 
 ## Glossary
 
@@ -41,7 +41,7 @@ The RPA Agent service runs as Local System, which is what lets it unlock and swi
 |------|-----------|
 | RPA | Robotic Process Automation. Software that records and plays back human interactions (keystrokes, mouse actions) with applications that lack programmatic interfaces. |
 | Last mile | The final manual steps in an automated process — typically UI interactions that an API-based scheduler cannot perform. |
-| Robot task | A recorded sequence of interactions that the RPA agent plays back when triggered. |
+| Robot task | A recorded or assembled sequence of activities that the RPA agent plays back when triggered — in an interactive session, or in the background when no activity needs a desktop. |
 | Web Macro | A task that drives its own browser against page elements, with no desktop session. |
 | Scan Document | A task that extracts data from scanned documents, with no desktop session. |
 
